@@ -130,13 +130,13 @@ Ce projet s'inscrit dans le brief de mise en production d'un modèle de Deep Lea
 
 | # | Tâche | Dépend de | Charge estimée (jours) | Charge réelle (jours) | Ressources | Date prévue |
 |---|-------|-----------|------------------------|-----------------------|------------|-------------|
-| **PHASE 0 — Mise en place (0,20 j)** | | | **0,20** | | | **J1 — 22/10 matin** |
-| 0.1 | Créer le dépôt GitHub + structure de dossiers | — | 0,05 | | H, T (GitHub) | 22/10 09h00–09h20 |
-| 0.2 | Configurer l'environnement Python (uv, venv, dépendances) | 0.1 | 0,10 | | H, M, T (Python, uv) | 22/10 09h20–10h15 |
-| 0.3 | Vérifier l'accès GPU/CUDA + placer le CSV dans `data/` | 0.2 | 0,05 | | H, M (GPU), T (dataset) | 22/10 10h30–10h55 |
+| **PHASE 0 — Mise en place (0,20 j)** | | | **0,20** | **0,12** | | **J1 — 22/10 matin** |
+| 0.1 | Créer le dépôt GitHub + structure de dossiers | — | 0,05 | 0,05 | H, T (GitHub) | 22/10 09h00–09h20 |
+| 0.2 | Configurer l'environnement Python (uv, venv, dépendances) | 0.1 | 0,10 | 0,00 | H, M, T (Python, uv) | 22/10 09h20–10h15 |
+| 0.3 | Vérifier l'accès GPU/CUDA + placer le CSV dans `data/` | 0.2 | 0,05 | 0,07 | H, M (GPU), T (dataset) | 22/10 10h30–10h55 |
 | **PHASE 1 — Notebook, 8 parties (1,80 j)** | | | **1,80** | | | **J1 après-midi → J2 — 22-23/10** |
-| 1.1 | Partie 1 : Audit et nettoyage des données | 0.3 | 0,15 | | H, M, T (pandas) | 22/10 10h55–12h10 |
-| 1.2 | Partie 2 : Découpage train/val/test/prod (60/20/20) | 1.1 | 0,10 | | H, T (sklearn) | 22/10 12h10–12h30 + 13h30–13h50 |
+| 1.1 | Partie 1 : Audit et nettoyage des données | 0.3 | 0,15 | 45min | H, M, T (pandas) | 22/10 10h55–12h10 |
+| 1.2 | Partie 2 : Découpage train/val/test/prod (60/20/20) | 1.1 | 0,10 | 45min | H, T (sklearn) | 22/10 12h10–12h30 + 13h30–13h50 |
 | 1.3 | Partie 3 : Représentation TF-IDF | 1.2 | 0,15 | | H, T (TfidfVectorizer) | 22/10 13h50–14h50 |
 | 1.4 | Partie 4 : Modèles de référence (LogReg, NB, NN simple) + F1 sur 5 graines | 1.3 | 0,25 | | H, M, T (sklearn, Keras) | 22/10 14h50–15h15 + 15h30–16h40 |
 | 1.5 | Partie 5 : Recherche KerasTuner (RandomSearch, 20 essais) | 1.4 | 0,25 | | H, M (GPU), T (KerasTuner) | 22/10 16h40–17h00 + 23/10 09h00–10h15 |
@@ -186,7 +186,7 @@ Ce projet s'inscrit dans le brief de mise en production d'un modèle de Deep Lea
 
 | Jalon | Date/heure prévue | Critère de passage | Validation |
 |-------|-------------------|--------------------|------------|
-| **J0** — Environnement prêt | 22/10 10h55 | Dépôt GitHub créé, environnement fonctionnel, GPU vérifié, CSV placé | Auto-vérification |
+| **J0** — Environnement prêt | 22/10 10h55 | Dépôt GitHub créé, environnement fonctionnel, GPU vérifié, CSV placé | ✅ **Atteint 22/10 10h00** |
 | **J1** — Notebook complet | 23/10 16h30 | Notebook exécutable de haut en bas, dossier `model/` complet, commit GitHub | Auto-vérification + revue |
 | **J2** — API + Qualité OK | 26/10 14h10 | /health et /predict répondent, tests pytest verts, barrière qualité validée | Auto-vérification |
 | **J3** — Image Docker OK | 26/10 16h00 | Image construite, conteneur local répond comme l'API locale | Auto-vérification |
@@ -262,7 +262,7 @@ DeepLearning_Create_Optimize_PushToProd/
 
 | Phase | Charge estimée (jours) | Charge réelle (jours) | Écart |
 |-------|------------------------|-----------------------|-------|
-| Phase 0 — Mise en place | 0,20 | | |
+| Phase 0 — Mise en place | 0,20 | **0,12** | **-0,08** (-29 min) |
 | Phase 1 — Notebook (8 parties) | 1,80 | | |
 | Phase 2 — API + Tests + Qualité | 0,55 | | |
 | Phase 3 — Conteneurisation | 0,25 | | |
@@ -271,7 +271,7 @@ DeepLearning_Create_Optimize_PushToProd/
 | Phase 6 — Gestion des versions | 0,20 | | |
 | Phase 7 — Fin de vie et ménage | 0,25 | | |
 | Phase 8 — Documentation et finalisation | 0,80 | | |
-| **TOTAL** | **5,00** | | |
+| **TOTAL** | **5,00** | **0,12** | |
 
 > **Note :** 5,0 jours estimés pour 5 jours travaillés (22, 23, 26, 27, 28/10) à **6h30/jour** (9h-17h avec pauses) = **32h30 effectives**. Pauses fixes : 10h15-10h30, 12h30-13h30 (repas), 15h15-15h30. Pas de marge calendaire — les estimations intègrent une marge interne de ~10% sur les tâches à risque. En cas de dépassement, prioriser les livrables obligatoires du brief.
 

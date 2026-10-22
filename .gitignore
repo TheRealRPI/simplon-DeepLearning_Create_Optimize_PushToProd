@@ -11,3 +11,6 @@ wheels/
 
 # Dossier pédagogique
 cours/
+
+# Configuration
+.*/

@@ -31,3 +31,14 @@ deeplearning-create-optimize-pushtoprod = "deeplearning_create_optimize_pushtopr
 [build-system]
 requires = ["uv_build>=0.12.15,<0.13.0"]
 build-backend = "uv_build"
+
+[tool.ruff]
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+
+[dependency-groups]
+dev = [
+    "ruff>=0.17.1",
+]
