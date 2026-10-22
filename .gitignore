@@ -14,3 +14,6 @@ cours/
 
 # Configuration
 .*/
+
+# Optimizer Temp
+keras*/
