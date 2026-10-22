@@ -1,0 +1,25 @@
+# DeepLearning — Create, Optimize, Push to Prod
+# Complément local (le cœur — tensorflow[and-cuda], numpy, ipykernel — est déjà dans pyproject.toml)
+
+# Recherche d'hyperparamètres
+keras-tuner>=1.4.7           # RandomSearch — réclame tensorboard
+tensorboard>=2.21.0
+optuna>=4.0.0                # create_study
+
+# Données & ML classique
+pandas>=2.3.0
+scikit-learn>=1.7.0          # TfidfVectorizer, LogisticRegression, MultinomialNB, train_test_split, métriques
+joblib>=1.4.0                # Sauvegarde du vectoriseur TF-IDF (joblib.dump)
+
+# Visualisation (notebook)
+matplotlib>=3.10.0
+
+# API de production
+fastapi>=0.118.0             # API (routes /health, /predict) + TestClient pour les tests
+uvicorn>=0.32.0              # Serveur ASGI pour lancer l'API
+pydantic>=2.10.0             # Validation des entrées de l'API
+httpx>=0.28.0                # Requis par fastapi.testclient.TestClient
+pyyaml>=6.0.2                # Lecture de config.yaml (barrière qualité)
+
+# Tests
+pytest>=8.3.0                # Tests automatiques (avec pytest.ini)
