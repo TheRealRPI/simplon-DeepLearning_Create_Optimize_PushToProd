@@ -139,11 +139,11 @@ Ce projet s'inscrit dans le brief de mise en production d'un modèle de Deep Lea
 | 1.2 | Partie 2 : Découpage train/val/test/prod (60/20/20) | 1.1 | 0,10 | 0,12 | H, T (sklearn) | 22/10 12h10–12h30 + 13h30–13h50 |
 | 1.3 | Partie 3 : Représentation TF-IDF | 1.2 | 0,15 |45min | H, T (TfidfVectorizer) | 22/10 13h50–14h50 |
 | 1.4 | Partie 4 : Modèles de référence (LogReg, NB, NN simple) + F1 sur 5 graines | 1.3 | 0,25 |45min | H, M, T (sklearn, Keras) | 22/10 14h50–15h15 + 15h30–16h40 |
-| 1.5 | Partie 5 : Recherche KerasTuner (RandomSearch, 20 essais) | 1.4 | 0,25 | | H, M (GPU), T (KerasTuner) | 22/10 16h40–17h00 + 23/10 09h00–10h15 |
-| 1.6 | Partie 6 : Recherche Optuna (20 essais, mêmes réglages) + comparaison | 1.5 | 0,25 | | H, M (GPU), T (Optuna) | 23/10 10h30–12h10 |
-| 1.7 | Partie 7 : Verdict sur le test (réentraînement, 5 graines, F1 final) | 1.6 | 0,20 | | H, M (GPU), T | 23/10 12h10–12h30 + 13h30–14h30 |
-| 1.8 | Partie 8 : Sauvegarde (model.keras, vectoriseur.joblib, metrics.json, reference.csv) | 1.7 | 0,10 | | H, T (joblib, json) | 23/10 14h30–15h10 |
-| 1.9 | Vérification : notebook exécutable de haut en bas + commit GitHub | 1.8 | 0,15 | | H, T (Git) | 23/10 15h30–16h30 |
+| 1.5 | Partie 5 : Recherche KerasTuner (RandomSearch, 20 essais) | 1.4 | 0,25 | 2h30+ | H, M (GPU), T (KerasTuner) | 22/10 16h40–17h00 + 23/10 09h00–10h15 |
+| 1.6 | Partie 6 : Recherche Optuna (20 essais, mêmes réglages) + comparaison | 1.5 | 0,25 |45min | H, M (GPU), T (Optuna) | 23/10 10h30–12h10 |
+| 1.7 | Partie 7 : Verdict sur le test (réentraînement, 5 graines, F1 final) | 1.6 | 0,20 |45min | H, M (GPU), T | 23/10 12h10–12h30 + 13h30–14h30 |
+| 1.8 | Partie 8 : Sauvegarde (model.keras, vectoriseur.joblib, metrics.json, reference.csv) | 1.7 | 0,10 |45min | H, T (joblib, json) | 23/10 14h30–15h10 |
+| 1.9 | Vérification : notebook exécutable de haut en bas + commit GitHub | 1.8 | 0,15 |1h | H, T (Git) | 23/10 15h30–16h30 |
 | **PHASE 2 - API + Tests + Qualité (0,55 j)** | | | **0,55** | | | **J3 - 26/10** |
 | 2.1 | API FastAPI : chargement modèle, routes /health et /predict | 1.9 | 0,20 | | H, T (FastAPI, Pydantic) | 26/10 09h00–10h15 + 10h30–10h35 |
 | 2.2 | Validation des entrées + tests manuels locaux (3 cas) | 2.1 | 0,10 | | H, M, T (Pydantic) | 26/10 10h35–11h15 |
