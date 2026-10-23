@@ -26,6 +26,7 @@
 | 22/10/2026 10h00 | `92cea0e` | Local (dépôt initialisé) | Initialisation du repo : structure de dossiers, `pyproject.toml`, `requirements.txt`, `uv.lock`, `.gitignore`, `PLAN.md`, données brutes (`Data/textes_films_horreur_comedie.csv`, 2400 lignes), squelette du package Python | ✅ Push réussi sur GitHub |
 | 22/10/2026 11h58 | `7c7b395` | Local | Ajout du notebook `model_creation_optimisation.ipynb` contenant les étapes 1 et 2 de création et optimisation du modèle, mise à jour de `PLAN.md`, `pyproject.toml` et `uv.lock` | ✅ Push réussi sur GitHub |
 | 22/10/2026 17h04 | `3a8147c` | Local | Mise à jour du notebook `model_creation_optimisation.ipynb` avec les étapes 3 et 4, modification de `PLAN.md` (102 lignes), mise à jour de `pyproject.toml` et `.gitignore` | ✅ Push réussi sur GitHub |
+| 23/10/2026 12h13 | `36cec04` | Local | Finalisation du notebook `model_creation_optimisation.ipynb` : refactor complet avec variables globales (EPOCH, BATCH, etc.), ajout d'un modèle quantifié, création des fichiers `model/metrics.json`, `model/model.keras`, `model/model.tflite`, `model/reference.csv`, `model/vectoriseur.joblib`, mise à jour de `PLAN.md` | ✅ Push réussi sur GitHub |
 
 ---
 
@@ -47,4 +48,4 @@
 
 ---
 
-*Dernière mise à jour : 22/10/2026 17h15*
+*Dernière mise à jour : 23/10/2026 12h20*

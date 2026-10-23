@@ -134,16 +134,16 @@ Ce projet s'inscrit dans le brief de mise en production d'un modèle de Deep Lea
 | 0.1 | Créer le dépôt GitHub + structure de dossiers | - | 0,05 | 0,05 | H, T (GitHub) | 22/10 09h00–09h20 |
 | 0.2 | Configurer l'environnement Python (uv, venv, dépendances) | 0.1 | 0,10 | 0,00 | H, M, T (Python, uv) | 22/10 09h20–10h15 |
 | 0.3 | Vérifier l'accès GPU/CUDA + placer le CSV dans `data/` | 0.2 | 0,05 | 0,07 | H, M (GPU), T (dataset) | 22/10 10h30–10h55 |
-| **PHASE 1 - Notebook, 8 parties (1,80 j)** | | | **1,80** | **0,24** | | **J1 après-midi → J2 - 22-23/10** |
-| 1.1 | Partie 1 : Audit et nettoyage des données | 0.3 | 0,15 | 0,12 | H, M, T (pandas) | 22/10 10h55–12h10 |
-| 1.2 | Partie 2 : Découpage train/val/test/prod (60/20/20) | 1.1 | 0,10 | 0,12 | H, T (sklearn) | 22/10 12h10–12h30 + 13h30–13h50 |
-| 1.3 | Partie 3 : Représentation TF-IDF | 1.2 | 0,15 |45min | H, T (TfidfVectorizer) | 22/10 13h50–14h50 |
-| 1.4 | Partie 4 : Modèles de référence (LogReg, NB, NN simple) + F1 sur 5 graines | 1.3 | 0,25 |45min | H, M, T (sklearn, Keras) | 22/10 14h50–15h15 + 15h30–16h40 |
-| 1.5 | Partie 5 : Recherche KerasTuner (RandomSearch, 20 essais) | 1.4 | 0,25 | 2h30+ | H, M (GPU), T (KerasTuner) | 22/10 16h40–17h00 + 23/10 09h00–10h15 |
-| 1.6 | Partie 6 : Recherche Optuna (20 essais, mêmes réglages) + comparaison | 1.5 | 0,25 |45min | H, M (GPU), T (Optuna) | 23/10 10h30–12h10 |
-| 1.7 | Partie 7 : Verdict sur le test (réentraînement, 5 graines, F1 final) | 1.6 | 0,20 |45min | H, M (GPU), T | 23/10 12h10–12h30 + 13h30–14h30 |
-| 1.8 | Partie 8 : Sauvegarde (model.keras, vectoriseur.joblib, metrics.json, reference.csv) | 1.7 | 0,10 |45min | H, T (joblib, json) | 23/10 14h30–15h10 |
-| 1.9 | Vérification : notebook exécutable de haut en bas + commit GitHub | 1.8 | 0,15 |1h | H, T (Git) | 23/10 15h30–16h30 |
+| **PHASE 1 - Notebook, 8 parties (1,80 j)** | | | **1,80** | **1,27** | | **J1 après-midi → J2 - 22-23/10** |
+| 1.1 | Partie 1 : Audit et nettoyage des données | 0.3 | 0,15 | 0,12 | H, M, T (pandas) | 22/10 10h55–12h10 ✅ |
+| 1.2 | Partie 2 : Découpage train/val/test/prod (60/20/20) | 1.1 | 0,10 | 0,12 | H, T (sklearn) | 22/10 12h10–12h30 + 13h30–13h50 ✅ |
+| 1.3 | Partie 3 : Représentation TF-IDF | 1.2 | 0,15 | 0,12 | H, T (TfidfVectorizer) | 22/10 13h50–14h50 ✅ |
+| 1.4 | Partie 4 : Modèles de référence (LogReg, NB, NN simple) + F1 sur 5 graines | 1.3 | 0,25 | 0,12 | H, M, T (sklearn, Keras) | 22/10 14h50–15h15 + 15h30–16h40 ✅ |
+| 1.5 | Partie 5 : Recherche KerasTuner (RandomSearch, 20 essais) | 1.4 | 0,25 | 0,40 | H, M (GPU), T (KerasTuner) | 22/10 16h40–17h00 + 23/10 09h00–10h15 ✅ |
+| 1.6 | Partie 6 : Recherche Optuna (20 essais, mêmes réglages) + comparaison | 1.5 | 0,25 | 0,12 | H, M (GPU), T (Optuna) | 23/10 10h30–12h10 ✅ |
+| 1.7 | Partie 7 : Verdict sur le test (réentraînement, 5 graines, F1 final) | 1.6 | 0,20 | 0,12 | H, M (GPU), T | 23/10 12h10–12h30 + 13h30–14h30 ✅ |
+| 1.8 | Partie 8 : Sauvegarde (model.keras, vectoriseur.joblib, metrics.json, reference.csv) | 1.7 | 0,10 | 0,12 | H, T (joblib, json) | 23/10 14h30–15h10 ✅ |
+| 1.9 | Vérification : notebook exécutable de haut en bas + commit GitHub | 1.8 | 0,15 | 0,15 | H, T (Git) | 23/10 15h30–16h30 ✅ |
 | **PHASE 2 - API + Tests + Qualité (0,55 j)** | | | **0,55** | | | **J3 - 26/10** |
 | 2.1 | API FastAPI : chargement modèle, routes /health et /predict | 1.9 | 0,20 | | H, T (FastAPI, Pydantic) | 26/10 09h00–10h15 + 10h30–10h35 |
 | 2.2 | Validation des entrées + tests manuels locaux (3 cas) | 2.1 | 0,10 | | H, M, T (Pydantic) | 26/10 10h35–11h15 |
@@ -187,7 +187,7 @@ Ce projet s'inscrit dans le brief de mise en production d'un modèle de Deep Lea
 | Jalon | Date/heure prévue | Critère de passage | Validation |
 |-------|-------------------|--------------------|------------|
 | **J0** - Environnement prêt | 22/10 10h55 | Dépôt GitHub créé, environnement fonctionnel, GPU vérifié, CSV placé | ✅ **Atteint 22/10 10h00** |
-| **J1** - Notebook complet | 23/10 16h30 | Notebook exécutable de haut en bas, dossier `model/` complet, commit GitHub | Auto-vérification + revue |
+| **J1** - Notebook complet | 23/10 16h30 | Notebook exécutable de haut en bas, dossier `model/` complet, commit GitHub | ✅ **Atteint 23/10 12h30** |
 | **J2** - API + Qualité OK | 26/10 14h10 | /health et /predict répondent, tests pytest verts, barrière qualité validée | Auto-vérification |
 | **J3** - Image Docker OK | 26/10 16h00 | Image construite, conteneur local répond comme l'API locale | Auto-vérification |
 | **J4** - CI/CD vert | 27/10 11h10 | 3 jobs verts, test négatif validé (rouge puis vert) | GitHub Actions |
@@ -263,7 +263,7 @@ DeepLearning_Create_Optimize_PushToProd/
 | Phase | Charge estimée (jours) | Charge réelle (jours) | Écart |
 |-------|------------------------|-----------------------|-------|
 | Phase 0 - Mise en place | 0,20 | **0,12** | **-0,08** (-29 min) |
-| Phase 1 - Notebook (8 parties) | 1,80 | **0,24** | |
+| Phase 1 - Notebook (8 parties) | 1,80 | **1,27** | **-0,53** |
 | Phase 2 - API + Tests + Qualité | 0,55 | | |
 | Phase 3 - Conteneurisation | 0,25 | | |
 | Phase 4 - CI/CD GitHub Actions | 0,45 | | |
@@ -271,7 +271,7 @@ DeepLearning_Create_Optimize_PushToProd/
 | Phase 6 - Gestion des versions | 0,20 | | |
 | Phase 7 - Fin de vie et ménage | 0,25 | | |
 | Phase 8 - Documentation et finalisation | 0,80 | | |
-| **TOTAL** | **5,00** | **0,36** | |
+| **TOTAL** | **5,00** | **1,39** | |
 
 > **Note :** 5,0 jours estimés pour 5 jours travaillés (22, 23, 26, 27, 28/10) à **6h30/jour** (9h-17h avec pauses) = **32h30 effectives**. Pauses fixes : 10h15-10h30, 12h30-13h30 (repas), 15h15-15h30. Pas de marge calendaire, les estimations intègrent une marge interne de ~10% sur les tâches à risque. En cas de dépassement, prioriser les livrables obligatoires du brief.
 
