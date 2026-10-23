@@ -23,6 +23,30 @@ wheels = [
 ]
 
 [[package]]
+name = "ai-edge-litert"
+version = "2.3.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "backports-strenum" },
+    { name = "flatbuffers" },
+    { name = "ml-dtypes" },
+    { name = "numpy" },
+    { name = "protobuf" },
+    { name = "tqdm" },
+    { name = "typing-extensions" },
+]
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/8b/75/193315cb2b09d5a477cd2166304dc1dd174b71a3ad5f7da63e3c003a66d2/ai_edge_litert-2.3.0-cp313-cp313-macosx_12_0_arm64.whl", hash = "sha256:b4c4fa67442c5add9a5a2b672ee885e3be38a8f517d3ec33efb49c3ec57d5261", size = 12825925, upload-time = "2026-10-06T23:09:59.047Z" },
+    { url = "https://files.pythonhosted.org/packages/b2/ad/234674ab4781ff1822c26794488b5640512bc61011a6b3490bfecdc46aa1/ai_edge_litert-2.3.0-cp313-cp313-manylinux_2_27_aarch64.whl", hash = "sha256:2ab71e4f5dfa65b3882634b42755f455f3e7415630d720200bd792733e15e257", size = 14380166, upload-time = "2026-10-06T22:53:24.94Z" },
+    { url = "https://files.pythonhosted.org/packages/81/5f/24ee5e5f52c2fbf02801b557c4a29043b0070eb75cb32569ffe1d4bbb48a/ai_edge_litert-2.3.0-cp313-cp313-manylinux_2_27_x86_64.whl", hash = "sha256:985ac3823fe1d5d6a04cf5f613cc2adf98a9c8a456af0b5efa8d9ac6b118ea14", size = 21781769, upload-time = "2026-10-06T23:36:27.737Z" },
+    { url = "https://files.pythonhosted.org/packages/74/67/2cba4e358d8acdf0953e132a5fb2618c5f7944a1b82b0fa0247133d2592e/ai_edge_litert-2.3.0-cp313-cp313-win_amd64.whl", hash = "sha256:c61e7bfe1938f94f2de7062e580b95f141157220af46c59c65fac8dd72d426b0", size = 20670587, upload-time = "2026-10-06T23:00:28.614Z" },
+    { url = "https://files.pythonhosted.org/packages/d4/2c/c37dc051e0b1acdf4a35d597269fcb6ad417da5a2abc5188ecb8c7ffa58b/ai_edge_litert-2.3.0-cp314-cp314-macosx_12_0_arm64.whl", hash = "sha256:61fcf2e6b270d300c2e732330325324df036dd9ec547de6d6f073eaa438fbc8f", size = 12826304, upload-time = "2026-10-06T23:10:01.283Z" },
+    { url = "https://files.pythonhosted.org/packages/3b/16/49b1997efd47ac188c8eb23473c328ad9e2ddb4dd1f14bb44628074aa169/ai_edge_litert-2.3.0-cp314-cp314-manylinux_2_27_aarch64.whl", hash = "sha256:899b41423b30f3cef1ce8a361443092fdeefc4d536132511634fa21548347b0a", size = 14380641, upload-time = "2026-10-06T22:53:27.908Z" },
+    { url = "https://files.pythonhosted.org/packages/38/58/087131ec133c1b69eaf393fdcedc11a128296c94d7d31f7638edfe9ef76d/ai_edge_litert-2.3.0-cp314-cp314-manylinux_2_27_x86_64.whl", hash = "sha256:695f5164b66ebdb0a3bbb4edc4d7024e87c65a0e417d48d0a2db2503bc01b78d", size = 21781596, upload-time = "2026-10-06T23:36:30.366Z" },
+    { url = "https://files.pythonhosted.org/packages/4b/e6/71e7c3164c7c4c3d3e06e224ba54559b7f5730fa4527fda5a48bf59d3ed0/ai_edge_litert-2.3.0-cp314-cp314-win_amd64.whl", hash = "sha256:08cec0910d071345743379c9bac1b1d76f5050d9dd2d525e2300826ba132e89c", size = 21401139, upload-time = "2026-10-06T23:00:31.901Z" },
+]
+
+[[package]]
 name = "alembic"
 version = "1.20.1"
 source = { registry = "https://pypi.org/simple" }
@@ -96,6 +120,15 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/f3/af/4182184d3c338792894f34a62672919db7ca008c89abee9b564dd34d8029/astunparse-1.6.3.tar.gz", hash = "sha256:5ad93a8456f0d084c3456d059fd9a92cce667963232cbf763eac3bc5b7940872", size = 18290, upload-time = "2019-12-22T18:12:13.129Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/2b/03/13dde6512ad7b4557eb792fbcf0c653af6076b81e5941d36ec61f7ce6028/astunparse-1.6.3-py2.py3-none-any.whl", hash = "sha256:c2652417f2c8b5bb325c885ae329bdf3f86424075c4fd1a128674bc6fba4b8e8", size = 12732, upload-time = "2019-12-22T18:12:11.297Z" },
+]
+
+[[package]]
+name = "backports-strenum"
+version = "1.3.1"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/35/c7/2ed54c32fed313591ffb21edbd48db71e68827d43a61938e5a0bc2b6ec91/backports_strenum-1.3.1.tar.gz", hash = "sha256:77c52407342898497714f0596e86188bb7084f89063226f4ba66863482f42414", size = 7257, upload-time = "2023-12-09T14:36:40.937Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/d6/50/56cf20e2ee5127b603b81d5a69580a1a325083e2b921aa8f067da83927c0/backports_strenum-1.3.1-py3-none-any.whl", hash = "sha256:cdcfe36dc897e2615dc793b7d3097f54d359918fc448754a517e6f23044ccf83", size = 8304, upload-time = "2023-12-09T14:36:39.905Z" },
 ]
 
 [[package]]
@@ -447,6 +480,7 @@ name = "deeplearning-create-optimize-pushtoprod"
 version = "0.1.0"
 source = { editable = "." }
 dependencies = [
+    { name = "ai-edge-litert" },
     { name = "fastapi" },
     { name = "httpx" },
     { name = "ipykernel" },
@@ -471,6 +505,7 @@ dev = [
 
 [package.metadata]
 requires-dist = [
+    { name = "ai-edge-litert", specifier = ">=2.3.0" },
     { name = "fastapi", specifier = ">=0.118.0" },
     { name = "httpx", specifier = ">=0.28.0" },
     { name = "ipykernel", specifier = ">=7.4.0" },
