@@ -144,11 +144,11 @@ Ce projet s'inscrit dans le brief de mise en production d'un modèle de Deep Lea
 | 1.7 | Partie 7 : Verdict sur le test (réentraînement, 5 graines, F1 final) | 1.6 | 0,20 | 0,12 | H, M (GPU), T | 23/10 12h10–12h30 + 13h30–14h30 ✅ |
 | 1.8 | Partie 8 : Sauvegarde (model.keras, vectoriseur.joblib, metrics.json, reference.csv) | 1.7 | 0,10 | 0,12 | H, T (joblib, json) | 23/10 14h30–15h10 ✅ |
 | 1.9 | Vérification : notebook exécutable de haut en bas + commit GitHub | 1.8 | 0,15 | 0,15 | H, T (Git) | 23/10 15h30–16h30 ✅ |
-| **PHASE 2 - API + Tests + Qualité (0,55 j)** | | | **0,55** | | | **J3 - 26/10** |
-| 2.1 | API FastAPI : chargement modèle, routes /health et /predict | 1.9 | 0,20 |2h30 | H, T (FastAPI, Pydantic) | 26/10 09h00–10h15 + 10h30–10h35 |
-| 2.2 | Validation des entrées + tests manuels locaux (3 cas) | 2.1 | 0,10 |30min | H, M, T (Pydantic) | 26/10 10h35–11h15 |
-| 2.3 | Tests automatiques pytest + barrière qualité (config.yaml + script) | 2.2 | 0,15 | | H, T (pytest, httpx, pyyaml) | 26/10 11h15–12h15 |
-| 2.4 | Test de la barrière : modèle accepté + faux modèle refusé | 2.3 | 0,10 | | H, T | 26/10 13h30–14h10 |
+| **PHASE 2 - API + Tests + Qualité (0,55 j)** | | | **0,55** | **1,00** | | **J3 - 26/10** |
+| 2.1 | API FastAPI : chargement modèle, routes /health et /predict | 1.9 | 0,20 | 0,38 | H, T (FastAPI, Pydantic) | 26/10 09h00–10h15 + 10h30–10h35 ✅ |
+| 2.2 | Validation des entrées + tests manuels locaux (3 cas) | 2.1 | 0,10 | 0,31 | H, M, T (Pydantic) | 26/10 10h35–11h15 ✅ |
+| 2.3 | Tests automatiques pytest + barrière qualité (config.yaml + script) | 2.2 | 0,15 | 0,23 | H, T (pytest, httpx, pyyaml) | 26/10 11h15–12h15 ✅ |
+| 2.4 | Test de la barrière : modèle accepté + faux modèle refusé | 2.3 | 0,10 | 0,08 | H, T | 26/10 13h30–14h10 ✅ |
 | **PHASE 3 - Conteneurisation (0,25 j)** | | | **0,25** | | | **J3 - 26/10 après-midi** |
 | 3.1 | Dockerfile (image slim, tensorflow-cpu) + .dockerignore | 2.4 | 0,10 | | H, T (Docker) | 26/10 14h10–14h50 |
 | 3.2 | Construction de l'image + test du conteneur local (3 cas) | 3.1 | 0,15 | | H, M, T (Docker) | 26/10 14h50–15h15 + 15h30–16h00 |
@@ -188,7 +188,7 @@ Ce projet s'inscrit dans le brief de mise en production d'un modèle de Deep Lea
 |-------|-------------------|--------------------|------------|
 | **J0** - Environnement prêt | 22/10 10h55 | Dépôt GitHub créé, environnement fonctionnel, GPU vérifié, CSV placé | ✅ **Atteint 22/10 10h00** |
 | **J1** - Notebook complet | 23/10 16h30 | Notebook exécutable de haut en bas, dossier `model/` complet, commit GitHub | ✅ **Atteint 23/10 12h30** |
-| **J2** - API + Qualité OK | 26/10 14h10 | /health et /predict répondent, tests pytest verts, barrière qualité validée | Auto-vérification |
+| **J2** - API + Qualité OK | 26/10 14h10 | /health et /predict répondent, tests pytest verts, barrière qualité validée | ✅ **Atteint 26/10 14h10** |
 | **J3** - Image Docker OK | 26/10 16h00 | Image construite, conteneur local répond comme l'API locale | Auto-vérification |
 | **J4** - CI/CD vert | 27/10 11h10 | 3 jobs verts, test négatif validé (rouge puis vert) | GitHub Actions |
 | **J5** - Production en ligne | 27/10 15h30 | Adresse publique accessible, /health et /predict OK | **Formateur** |
@@ -264,14 +264,14 @@ DeepLearning_Create_Optimize_PushToProd/
 |-------|------------------------|-----------------------|-------|
 | Phase 0 - Mise en place | 0,20 | **0,12** | **-0,08** (-29 min) |
 | Phase 1 - Notebook (8 parties) | 1,80 | **1,27** | **-0,53** |
-| Phase 2 - API + Tests + Qualité | 0,55 | | |
+| Phase 2 - API + Tests + Qualité | 0,55 | **1,00** | **+0,45** |
 | Phase 3 - Conteneurisation | 0,25 | | |
 | Phase 4 - CI/CD GitHub Actions | 0,45 | | |
 | Phase 5 - Déploiement Azure | 0,50 | | |
 | Phase 6 - Gestion des versions | 0,20 | | |
 | Phase 7 - Fin de vie et ménage | 0,25 | | |
 | Phase 8 - Documentation et finalisation | 0,80 | | |
-| **TOTAL** | **5,00** | **1,39** | |
+| **TOTAL** | **5,00** | **2,39** | |
 
 > **Note :** 5,0 jours estimés pour 5 jours travaillés (22, 23, 26, 27, 28/10) à **6h30/jour** (9h-17h avec pauses) = **32h30 effectives**. Pauses fixes : 10h15-10h30, 12h30-13h30 (repas), 15h15-15h30. Pas de marge calendaire, les estimations intègrent une marge interne de ~10% sur les tâches à risque. En cas de dépassement, prioriser les livrables obligatoires du brief.
 

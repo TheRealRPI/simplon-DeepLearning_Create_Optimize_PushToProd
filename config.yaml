@@ -1,0 +1,14 @@
+# =============================================================================
+# BARRIÈRE QUALITÉ — Seuils minimaux d'acceptation du modèle
+# =============================================================================
+# Lu par src/deeplearning_create_optimize_pushtoprod/quality_gate.py,
+# qui compare ces seuils aux métriques de model/metrics.json.
+#
+# Justification du seuil F1 :
+# le seuil de 0,83 est fixé juste au-dessus du plancher
+# F1_test − marge_de_bruit = 0,8608 − 0,0313 = 0,8295 :
+# un modèle honnête garde donc sa marge de bruit,
+# mais un modèle dégradé (F1 ≈ 0,5) est refusé.
+
+f1_minimum: 0.83
+test_size_minimum: 400

@@ -89,7 +89,7 @@ class PredictResponse(BaseModel):
     """
 
     # Définir les champs de réponse et leur type
-    classe: int
+    classe: str
     probabilite: float
     version: str
     type_modele: str = "tflite"
@@ -182,11 +182,11 @@ async def predict(
 
     try:
         probabilite = model_loader.predict(request.texte)
-        classe = 1 if probabilite > 0.5 else 0
+        cat = 1 if probabilite > 0.5 else 0
         version = model_loader.get_model_info()["version"]
 
         return PredictResponse(
-            classe=classe,
+            classe=f"{cat} : {'comédie' if cat == 0 else 'horreur'}",
             probabilite=probabilite,
             version=version,
         )
