@@ -1,10 +1,10 @@
 {
   "model_version": "1.0.0",
   "model_type": "Sequential (Keras)",
-  "f1_score_test": 0.8608,
+  "f1_score_test": 0.72,
   "f1_score_test_moyen_5_graines": 0.8589,
   "f1_score_test_std_5_graines": 0.0032,
-  "test_size": 470,
+  "test_size": 353,
   "train_size": 1407,
   "production_size": 469,
   "marge_de_bruit": 0.0313,
@@ -48,6 +48,6 @@
     "optuna": "5.0.0",
     "joblib": "1.6.0"
   },
-  "date_entrainement": "2026-10-23",
+  "date_entrainement": "2042-12-12",
   "seed": 42
 }
