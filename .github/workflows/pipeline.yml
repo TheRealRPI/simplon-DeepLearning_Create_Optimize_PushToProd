@@ -1,0 +1,116 @@
+# =============================================================================
+# PIPELINE CI/CD — GitHub Actions (PLAN.md, Phase 4, tâches 4.1 et 4.2)
+# =============================================================================
+# Deux jobs, dans l'esprit du projet ("le service est léger, l'inférence
+# passe par LiteRT, pas TensorFlow") :
+#
+#   test   : barrière qualité (exit 1 = rouge) + pytest sur la stack exacte
+#            de l'image Docker (requirements.txt + PYTHONPATH=src).
+#   image  : build de l'image Docker + smoke test du conteneur (/health, /predict).
+#
+# Le job "publier" (login ACR + push, PLAN.md tâches 4.4 + 5.2) est ajouté
+# demain, une fois le registre Azure créé et les 3 secrets posés.
+#
+# Runner : ubuntu-26.04 épinglé (GA depuis le 17/09/2026) — reproductible
+# pendant le brief, alors que ubuntu-latest migre 24.04 → 26.04 entre le
+# 19/10 et le 19/11 2026.
+#
+# Docker n'est préinstallé QUE sur les runners Linux : ubuntu-26.04 est le
+# choix naturel et cohérent avec la chaîne de production (python:3.13-slim,
+# Azure Container Apps).
+#
+# Auteur : TheRealRPI
+# Date   : 26/10/2026
+# =============================================================================
+
+name: CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+  workflow_dispatch:
+
+# =============================================================================
+# JOB 1 — TEST : barrière qualité + pytest (tâche 4.1)
+# =============================================================================
+
+jobs:
+  test:
+    runs-on: ubuntu-26.04
+    steps:
+      - name: Récupérer le code
+        uses: actions/checkout@v5
+
+      - name: Installer Python 3.13 (cache pip sur requirements.txt)
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: pip
+          cache-dependency-path: requirements.txt
+
+      - name: Installer les dépendances (runtime + tests, comme l'image Docker)
+        run: pip install -r requirements.txt pytest httpx pyyaml
+
+      - name: Barrière qualité (F1 >= 0.83, test_size >= 400 — exit 1 = rouge)
+        env:
+          PYTHONPATH: src
+        run: python -m deeplearning_create_optimize_pushtoprod.quality_gate
+
+      - name: Tests pytest
+        env:
+          PYTHONPATH: src
+        run: pytest -v
+
+# =============================================================================
+# JOB 2 — IMAGE : build Docker + smoke test du conteneur (tâche 4.2)
+# =============================================================================
+
+  image:
+    needs: test
+    runs-on: ubuntu-26.04
+    steps:
+      - name: Récupérer le code
+        uses: actions/checkout@v5
+
+      - name: Construire l'image Docker
+        run: docker build -t film-api:ci .
+
+      - name: Démarrer le conteneur
+        run: docker run -d --name film-api-ci -p 8000:8000 film-api:ci
+
+      - name: Smoke test /health et /predict
+        run: |
+          set -e
+
+          # Le HEALTHCHECK du Dockerfile accepte un démarrage en 20 s :
+          # on laisse au modèle le temps de se charger (start-period).
+          echo "Attente du démarrage de l'API..."
+          ok=""
+          for i in $(seq 1 30); do
+            if curl -sf http://localhost:8000/health > /dev/null; then
+              ok="1"; break
+            fi
+            sleep 2
+          done
+          if [ -z "$ok" ]; then
+            echo "::error::L'API n'a pas répondu sur /health après 60 s" >&2
+            docker logs film-api-ci >&2
+            exit 1
+          fi
+
+          # 1) /health → status ok
+          curl -sf http://localhost:8000/health | grep -q '"status":"ok"'
+          echo "/health OK"
+
+          # 2) /predict → 200 avec le vrai modèle TFLite (résumé de comédie)
+          curl -sf -X POST http://localhost:8000/predict \
+            -H "Content-Type: application/json" \
+            -d '{"texte": "Seven year-old Albert is the son of a Las Vegas circus performer. When she is killed in a car wreck, Albert is sent to live with his mother foster sister, Harriet Franklin, a no-nonsense businesswoman struggling in New Jersey."}'
+          echo ""
+          echo "/predict OK"
+
+      - name: Nettoyer le conteneur
+        if: always()
+        run: docker rm -f film-api-ci
