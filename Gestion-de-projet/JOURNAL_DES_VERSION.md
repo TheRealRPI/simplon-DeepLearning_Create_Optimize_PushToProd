@@ -29,6 +29,10 @@
 | 23/10/2026 12h13 | `36cec04` | Local | Finalisation du notebook `model_creation_optimisation.ipynb` : refactor complet avec variables globales (EPOCH, BATCH, etc.), ajout d'un modèle quantifié, création des fichiers `model/metrics.json`, `model/model.keras`, `model/model.tflite`, `model/reference.csv`, `model/vectoriseur.joblib`, mise à jour de `PLAN.md` | ✅ Push réussi sur GitHub |
 | 23/10/2026 12h20 | `6be54f5` | Local | Mise à jour de `PLAN.md` (26 lignes modifiées) et du journal des versions | ✅ Push réussi sur GitHub |
 | 23/10/2026 16h33 | `a925a76` | Local | Ajout de l'API : création des fichiers `src/deeplearning_create_optimize_pushtoprod/api.py` et `src/deeplearning_create_optimize_pushtoprod/model_loader.py`, mise à jour de `.gitignore`, `pyproject.toml` et `uv.lock` | ✅ Push réussi sur GitHub |
+| 26/10/2026 10h29 | `0f8fc73` | Local | Modification de l'API avec détection de la langue : refonte de `model_loader.py`, évolution de `api.py`, mise à jour de `PLAN.md`, `pyproject.toml` et `uv.lock` | ✅ Push réussi sur GitHub |
+| 26/10/2026 12h33 | `41520a3` | Local | Tests automatiques et barrière qualité : ajout de `quality_gate.py`, `config.yaml`, `model/faux_metrics.json`, création de la suite de tests (`tests/conftest.py`, `tests/test_api.py`, `tests/test_quality_gate.py`), mise à jour de `PLAN.md` | ✅ Push réussi sur GitHub |
+| 26/10/2026 14h47 | `1d7a02b` | Local | API conteneurisée via Docker : ajout du `Dockerfile` et `.dockerignore`, mise à jour de `requirements.txt` et `PLAN.md` | ✅ Push réussi sur GitHub |
+| 26/10/2026 15h07 | `fdf5cee` | Local | Phase 4 (4.1 + 4.2) : pipeline CI/CD GitHub Actions (`.github/workflows/pipeline.yml`) avec jobs `test` (Python 3.13, barrière qualité, pytest) et `image` (build Docker + smoke test `/health` et `/predict`), runners `ubuntu-26.04` épinglés, correctif `.gitignore` (exception `!.github/`) | ✅ Push réussi sur GitHub |
 
 ---
 
@@ -50,4 +54,4 @@
 
 ---
 
-*Dernière mise à jour : 23/10/2026 16h45*
+*Dernière mise à jour : 26/10/2026 15h00*

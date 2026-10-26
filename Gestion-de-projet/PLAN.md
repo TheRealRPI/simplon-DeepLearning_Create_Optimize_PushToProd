@@ -152,9 +152,9 @@ Ce projet s'inscrit dans le brief de mise en production d'un modèle de Deep Lea
 | **PHASE 3 - Conteneurisation (0,25 j)** | | | **0,25** | **0,16** | | **J3 - 26/10 après-midi** |
 | 3.1 | Dockerfile (image slim, tensorflow-cpu) + .dockerignore | 2.4 | 0,10 | 0,08 | H, T (Docker) | 26/10 14h10–14h50 ✅ |
 | 3.2 | Construction de l'image + test du conteneur local (3 cas) | 3.1 | 0,15 | 0,08 | H, M, T (Docker) | 26/10 14h50–15h15 + 15h30–16h00 ✅ |
-| **PHASE 4 - CI/CD GitHub Actions (0,45 j)** | | | **0,45** | | | **J3 fin après-midi → J4 matin** |
-| 4.1 | Workflow GitHub Actions : job `test` (install, barrière qualité, pytest) | 3.2 | 0,15 | | H, T (GitHub Actions) | 26/10 16h00–17h00 |
-| 4.2 | Workflow : job `image` (build Docker + vérification démarrage API) | 4.1 | 0,10 | | H, T (Docker, Actions) | 27/10 09h00–09h40 |
+| **PHASE 4 - CI/CD GitHub Actions (0,45 j)** | | | **0,45** | **0,15** | | **J3 fin après-midi → J4 matin** |
+| 4.1 | Workflow GitHub Actions : job `test` (install, barrière qualité, pytest) | 3.2 | 0,15 | 0,10 | H, T (GitHub Actions) | 26/10 16h00–17h00 |
+| 4.2 | Workflow : job `image` (build Docker + vérification démarrage API) | 4.1 | 0,10 | 0,05 | H, T (Docker, Actions) | 27/10 09h00–09h40 |
 | 4.3 | Test du workflow : push → 2 jobs verts + test négatif (seuil impossible) | 4.2 | 0,10 | | H, T (GitHub) | 27/10 09h40–10h20 |
 | 4.4 | Ajout job `publier` (préparation secrets ACR) | 4.3 | 0,10 | | H, T (GitHub Secrets) | 27/10 10h30–11h10 |
 | **PHASE 5 - Déploiement Azure (0,50 j)** | | | **0,50** | | | **J4 - 27/10 après-midi** |
@@ -266,12 +266,12 @@ DeepLearning_Create_Optimize_PushToProd/
 | Phase 1 - Notebook (8 parties) | 1,80 | **1,27** | **-0,53** |
 | Phase 2 - API + Tests + Qualité | 0,55 | **1,00** | **+0,45** |
 | Phase 3 - Conteneurisation | 0,25 | **0,16** | **-0,09** |
-| Phase 4 - CI/CD GitHub Actions | 0,45 | | |
+| Phase 4 - CI/CD GitHub Actions | 0,45 | **0,15** | **-0,30** |
 | Phase 5 - Déploiement Azure | 0,50 | | |
 | Phase 6 - Gestion des versions | 0,20 | | |
 | Phase 7 - Fin de vie et ménage | 0,25 | | |
 | Phase 8 - Documentation et finalisation | 0,80 | | |
-| **TOTAL** | **5,00** | **2,55** | |
+| **TOTAL** | **5,00** | **2,70** | |
 
 > **Note :** 5,0 jours estimés pour 5 jours travaillés (22, 23, 26, 27, 28/10) à **6h30/jour** (9h-17h avec pauses) = **32h30 effectives**. Pauses fixes : 10h15-10h30, 12h30-13h30 (repas), 15h15-15h30. Pas de marge calendaire, les estimations intègrent une marge interne de ~10% sur les tâches à risque. En cas de dépassement, prioriser les livrables obligatoires du brief.
 
