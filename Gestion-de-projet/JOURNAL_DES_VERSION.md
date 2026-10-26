@@ -33,6 +33,7 @@
 | 26/10/2026 12h33 | `41520a3` | Local | Tests automatiques et barrière qualité : ajout de `quality_gate.py`, `config.yaml`, `model/faux_metrics.json`, création de la suite de tests (`tests/conftest.py`, `tests/test_api.py`, `tests/test_quality_gate.py`), mise à jour de `PLAN.md` | ✅ Push réussi sur GitHub |
 | 26/10/2026 14h47 | `1d7a02b` | Local | API conteneurisée via Docker : ajout du `Dockerfile` et `.dockerignore`, mise à jour de `requirements.txt` et `PLAN.md` | ✅ Push réussi sur GitHub |
 | 26/10/2026 15h07 | `fdf5cee` | Local | Phase 4 (4.1 + 4.2) : pipeline CI/CD GitHub Actions (`.github/workflows/pipeline.yml`) avec jobs `test` (Python 3.13, barrière qualité, pytest) et `image` (build Docker + smoke test `/health` et `/predict`), runners `ubuntu-26.04` épinglés, correctif `.gitignore` (exception `!.github/`) | ✅ Push réussi sur GitHub |
+| 26/10/2026 15h10 | `fdf5cee` | CI (GitHub Actions) | Run #1 : job `test` VERT (0:32 — barrière qualité acceptée + pytest OK) puis job `image` VERT (0:48 — build + smoke test conteneur). URL : `actions/runs/40336844450` | ✅ 2 jobs verts |
 
 ---
 

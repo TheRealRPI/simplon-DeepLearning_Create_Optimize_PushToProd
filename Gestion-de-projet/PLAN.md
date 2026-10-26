@@ -153,8 +153,8 @@ Ce projet s'inscrit dans le brief de mise en production d'un modèle de Deep Lea
 | 3.1 | Dockerfile (image slim, tensorflow-cpu) + .dockerignore | 2.4 | 0,10 | 0,08 | H, T (Docker) | 26/10 14h10–14h50 ✅ |
 | 3.2 | Construction de l'image + test du conteneur local (3 cas) | 3.1 | 0,15 | 0,08 | H, M, T (Docker) | 26/10 14h50–15h15 + 15h30–16h00 ✅ |
 | **PHASE 4 - CI/CD GitHub Actions (0,45 j)** | | | **0,45** | **0,15** | | **J3 fin après-midi → J4 matin** |
-| 4.1 | Workflow GitHub Actions : job `test` (install, barrière qualité, pytest) | 3.2 | 0,15 | 0,10 | H, T (GitHub Actions) | 26/10 16h00–17h00 |
-| 4.2 | Workflow : job `image` (build Docker + vérification démarrage API) | 4.1 | 0,10 | 0,05 | H, T (Docker, Actions) | 27/10 09h00–09h40 |
+| 4.1 | Workflow GitHub Actions : job `test` (install, barrière qualité, pytest) | 3.2 | 0,15 | 0,10 | H, T (GitHub Actions) | 26/10 16h00–17h00 ✅ |
+| 4.2 | Workflow : job `image` (build Docker + vérification démarrage API) | 4.1 | 0,10 | 0,05 | H, T (Docker, Actions) | 27/10 09h00–09h40 ✅ |
 | 4.3 | Test du workflow : push → 2 jobs verts + test négatif (seuil impossible) | 4.2 | 0,10 | | H, T (GitHub) | 27/10 09h40–10h20 |
 | 4.4 | Ajout job `publier` (préparation secrets ACR) | 4.3 | 0,10 | | H, T (GitHub Secrets) | 27/10 10h30–11h10 |
 | **PHASE 5 - Déploiement Azure (0,50 j)** | | | **0,50** | | | **J4 - 27/10 après-midi** |
