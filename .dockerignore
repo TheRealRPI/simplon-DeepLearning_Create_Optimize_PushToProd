@@ -1,0 +1,46 @@
+# =============================================================================
+# .dockerignore — contexte de build minimal
+# =============================================================================
+# Sans ce fichier, le build enverrait ~250 Mo au daemon Docker
+# (.venv, keras_tuner_dir = 221 Mo, .git, caches...). Avec : quelques Mo.
+
+# --- VCS & metadata -----------------------------------------------------------
+.git
+.gitignore
+
+# --- Python : caches & environnement local ------------------------------------
+__pycache__/
+**/__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+.ruff_cache/
+.python-version
+uv.lock
+
+# --- IDE ----------------------------------------------------------------------
+.vscode/
+
+# --- Tests & barrière qualité : tournent en CI, pas dans l'image ----------------
+tests/
+config.yaml
+
+# --- Données & artefacts d'entraînement (inutiles au service) -----------------
+Data/
+keras_tuner_dir/
+notebooks/
+cours/
+Gestion-de-projet/
+
+# --- Artefacts modèle inutiles au runtime --------------------------------------
+# L'API et les tests ne chargent que model.tflite, vectoriseur.joblib
+# et metrics.json (vérifié dans api.py, model_loader.py, conftest.py).
+model/model.keras
+model/faux_metrics.json
+model/reference.csv
+
+# --- Divers --------------------------------------------------------------------
+# Le Dockerfile lui-même : l'inclure invaliderait le cache à chaque édition.
+Dockerfile
+.dockerignore
+README.md
