@@ -3,7 +3,7 @@ API FastAPI — Classification de résumés de films (horreur vs comédie).
 
 Routes :
 - GET  /health  : Vérifie que l'API est vivante + infos modèle
-- POST /predict : Reçoit un texte, renvoie la classe prédite
+- POST /predict : Reçoit un texte (en anglais), renvoie la classe prédite
 
 Lancement :
     uvicorn deeplearning_create_optimize_pushtoprod.api:app --reload
@@ -21,9 +21,17 @@ from contextlib import asynccontextmanager
 from typing import Any
 
 from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel, ConfigDict, Field
+from langdetect import DetectorFactory, LangDetectException, detect
+from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 from .model_loader import model_loader
+
+# =============================================================================
+# DÉTECTION DE LANGUE — CONFIG
+# =============================================================================
+# langdetect utilise de l'aléatoire : fixer le seed le rend déterministe
+# (même texte => même langue, indispensable pour une API)
+DetectorFactory.seed = 42
 
 # =============================================================================
 # SCHÉMA PYDANTIC — Validation des entrées
@@ -37,14 +45,29 @@ class PredictRequest(BaseModel):
     Le texte doit :
     - être une chaîne de caractères (str)
     - avoir une longueur minimale (évite les textes vides ou trop courts)
+    - être en anglais
     """
 
     # Défini le champ 'texte' avec validation
     texte: str = Field(
         ...,  # ... = Ellipsis en Python = "ce champ est obligatoire"
         min_length=42,
+        max_length=10000,
         description="Résumé du film à classifier (en anglais)",
     )
+
+    @field_validator("texte")
+    @classmethod
+    # cls = classe (ici PredictRequest)
+    def verifier_anglais(cls, v: str) -> str:
+        """Rejette le texte s'il n'est pas détecté comme anglais."""
+        try:
+            langue = detect(v)
+        except LangDetectException:
+            raise ValueError("Impossible de détecter la langue du texte. L'API n'accepte que l'anglais.")
+        if langue != "en":
+            raise ValueError(f"Text must be in english (Detected language : {langue}).")
+        return v
 
     # Ajouter un exemple pour la doc Swagger (optionnel mais cool)
     model_config = ConfigDict(
@@ -77,9 +100,9 @@ class PredictResponse(BaseModel):
 # =============================================================================
 
 
-# TODO: Créer un gestionnaire de cycle de vie (lifespan)
-# Indice : fonction async avec @asynccontextmanager
-#          Elle reçoit 'app' et fait un 'yield'
+# Gestionnaire de cycle de vie (lifespan)
+#   fonction async avec @asynccontextmanager
+#   Elle reçoit 'app' et fait un 'yield'
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """
@@ -123,8 +146,7 @@ async def health() -> dict[str, Any]:
     - infos du modèle (version, type, runtime, F1)
     """
 
-    # TODO: Récupérer les infos du modèle via model_loader
-    # Indice : model_loader.get_model_info()
+    # Récupére les infos du modèle via model_loader
     model_info = model_loader.get_model_info()
 
     return {
@@ -150,7 +172,7 @@ async def predict(
     """
     Reçoit un résumé de film et prédit sa catégorie (horreur ou comédie).
 
-    - **texte** : le résumé du film (obligatoire, min X caractères)
+    - **texte** : le résumé du film (obligatoire, 42 à 10 000 caractères, anglais uniquement)
 
     Retourne :
     - **classe** : 0 (comédie) ou 1 (horreur)
@@ -159,31 +181,26 @@ async def predict(
     """
 
     try:
-        # Appeler la prédiction du modèle
-        # request.texte = le texte validé par Pydantic
         probabilite = model_loader.predict(request.texte)
-
-        # Déterminer la classe (seuil 0.5)
-        # Indice : 1 si proba > 0.5, sinon 0
-        classe = 1 if probabilite > 0.5 else 0  # TODO: 1, 0.5, 0
-
-        # Récupérer la version du modèle
+        classe = 1 if probabilite > 0.5 else 0
         version = model_loader.get_model_info()["version"]
 
-        # Retourner la réponse (conforme au schéma PredictResponse)
         return PredictResponse(
             classe=classe,
             probabilite=probabilite,
             version=version,
-            # type_modele a une valeur par défaut ("tflite")
         )
 
-    # Gérer les erreurs
-    # Indice : si le modèle plante, renvoyer une erreur 500
+    except HTTPException:
+        # Une HTTPException explicite (4xx/5xx) ne doit jamais être avalée
+        # par le catch-all ci-dessous — on la relaie telle quelle
+        raise
+
     except Exception as e:
+        # Erreur imprévue : détail renvoyé au client dans le JSON {"detail": ...}
         raise HTTPException(
             status_code=500,
-            detail=f"Erreur interne à l'application. Erreur : {e}",
+            detail=f"Erreur interne de l'application. Erreur : {e}",
         )
 
 

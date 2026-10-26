@@ -145,8 +145,8 @@ Ce projet s'inscrit dans le brief de mise en production d'un modèle de Deep Lea
 | 1.8 | Partie 8 : Sauvegarde (model.keras, vectoriseur.joblib, metrics.json, reference.csv) | 1.7 | 0,10 | 0,12 | H, T (joblib, json) | 23/10 14h30–15h10 ✅ |
 | 1.9 | Vérification : notebook exécutable de haut en bas + commit GitHub | 1.8 | 0,15 | 0,15 | H, T (Git) | 23/10 15h30–16h30 ✅ |
 | **PHASE 2 - API + Tests + Qualité (0,55 j)** | | | **0,55** | | | **J3 - 26/10** |
-| 2.1 | API FastAPI : chargement modèle, routes /health et /predict | 1.9 | 0,20 | | H, T (FastAPI, Pydantic) | 26/10 09h00–10h15 + 10h30–10h35 |
-| 2.2 | Validation des entrées + tests manuels locaux (3 cas) | 2.1 | 0,10 | | H, M, T (Pydantic) | 26/10 10h35–11h15 |
+| 2.1 | API FastAPI : chargement modèle, routes /health et /predict | 1.9 | 0,20 |2h30 | H, T (FastAPI, Pydantic) | 26/10 09h00–10h15 + 10h30–10h35 |
+| 2.2 | Validation des entrées + tests manuels locaux (3 cas) | 2.1 | 0,10 |30min | H, M, T (Pydantic) | 26/10 10h35–11h15 |
 | 2.3 | Tests automatiques pytest + barrière qualité (config.yaml + script) | 2.2 | 0,15 | | H, T (pytest, httpx, pyyaml) | 26/10 11h15–12h15 |
 | 2.4 | Test de la barrière : modèle accepté + faux modèle refusé | 2.3 | 0,10 | | H, T | 26/10 13h30–14h10 |
 | **PHASE 3 - Conteneurisation (0,25 j)** | | | **0,25** | | | **J3 - 26/10 après-midi** |

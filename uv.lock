@@ -486,6 +486,7 @@ dependencies = [
     { name = "ipykernel" },
     { name = "joblib" },
     { name = "keras-tuner" },
+    { name = "langdetect" },
     { name = "matplotlib" },
     { name = "optuna" },
     { name = "pandas" },
@@ -511,6 +512,7 @@ requires-dist = [
     { name = "ipykernel", specifier = ">=7.4.0" },
     { name = "joblib", specifier = ">=1.4.0" },
     { name = "keras-tuner", specifier = ">=1.4.7" },
+    { name = "langdetect", specifier = ">=1.0.9" },
     { name = "matplotlib", specifier = ">=3.10.0" },
     { name = "optuna", specifier = ">=4.0.0" },
     { name = "pandas", specifier = ">=2.3.0" },
@@ -988,6 +990,15 @@ sdist = { url = "https://files.pythonhosted.org/packages/45/1f/d2cd57ea472f935e6
 wheels = [
     { url = "https://files.pythonhosted.org/packages/16/53/aca9f36da2516db008017db85a1f3cafaee0efc5fc7a25d94c909651792f/kt_legacy-1.0.5-py3-none-any.whl", hash = "sha256:8d5c5b3dccf348367fe9ca5b006e7ad2d1babcce62976cfc199e831ea699dcd3", size = 9606, upload-time = "2023-04-12T23:36:52.499Z" },
 ]
+
+[[package]]
+name = "langdetect"
+version = "1.0.9"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "six" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/0e/72/a3add0e4eec4eb9e2569554f7c70f4a3c27712f40e3284d483e88094cc0e/langdetect-1.0.9.tar.gz", hash = "sha256:cbc1fef89f8d062739774bd51eda3da3274006b3661d199c2655f6b3f6d605a0", size = 981474, upload-time = "2021-05-07T07:54:13.562Z" }
 
 [[package]]
 name = "libclang"

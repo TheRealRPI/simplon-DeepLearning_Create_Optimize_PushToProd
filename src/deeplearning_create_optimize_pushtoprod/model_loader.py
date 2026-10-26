@@ -18,13 +18,10 @@ import joblib  # Pour charger le vectoriseur
 from ai_edge_litert.interpreter import Interpreter  # Pour charger le modèle TFLite
 
 # =============================================================================
-# CHEMINS — À compléter
+# CHEMINS VERS LES FICHIERS
 # =============================================================================
 
-# TODO: Définir le chemin vers la racine du projet
-# Indice : Path(__file__) = ce fichier (src/.../model_loader.py)
-#          Il faut remonter de 3 niveaux pour arriver à la racine
-#          .parent = dossier parent
+# Racine du projet : ce fichier est dans src/<pkg>/, on remonte de 3 niveaux
 PROJECT_ROOT = Path(__file__).parent.parent.parent
 MODEL_DIR = PROJECT_ROOT / "model"
 MODEL_PATH = MODEL_DIR / "model.tflite"
@@ -60,9 +57,7 @@ class ModelLoader:
         # Allouer les tenseurs (préparer la mémoire interne)
         self.interpreter.allocate_tensors()
 
-        # TODO: Récupérer les détails d'entrée et de sortie
-        # Indice : ce sont des méthodes qui retournent une liste de dictionnaires
-        #          Tu as besoin de [0] (premier élément) pour input et output
+        # Détails d'entrée/sortie : méthodes qui retournent une liste de dicts → premier tenseur
         self.input_details = self.interpreter.get_input_details()[0]
         self.output_details = self.interpreter.get_output_details()[0]
 
@@ -200,13 +195,8 @@ class ModelLoader:
         # ÉTAPE 8 : Extraction de la probabilité
         # -------------------------------------------------------------------------
 
-        # TODO: Extraire la valeur float du résultat
-        # output est souvent un array de forme (1, 1) ou (1,)
-        # Il faut obtenir un float entre 0 et 1
-        #
-        # Indice : output[0][0] ou output[0] ou output.flatten()[0]
-        #          Essaie d'afficher output.shape et output pour voir
-        probability = float(output[0][0])  # TODO: indices
+        # output est un array de forme (1, 1) → on extrait le float
+        probability = float(output[0][0])
 
         return probability
 
@@ -229,8 +219,8 @@ if __name__ == "__main__":
 
     # Test 2 : Faire une prédiction
     texte_test = "Seven year-old Albert is the son of a Las Vegas circus performer. When she is killed in a car wreck, Albert is sent to live with his mother's foster sister, Harriet Franklin, a no-nonsense businesswoman struggling in New Jersey. Albert hates it with the dour Harriet, but takes refuge in the company of Bogus, a flamboyant, gentle, loving, and altogether imaginary Frenchman. With Bogus's help, Albert can perhaps come to terms with his mother's death, and Harriet with her own loss of childhood innocence."
-    proba = model_loader.predict(texte_test)  # TODO: texte_test
-    classe = "Horreur" if proba > 0.5 else "Comédie"  # TODO: 'horreur', 'comédie'
+    proba = model_loader.predict(texte_test)
+    classe = "Horreur" if proba > 0.5 else "Comédie"
 
     print(f"\nTexte : {texte_test[:100]}...")
     print(f"Probabilité : {proba:.4f}")
