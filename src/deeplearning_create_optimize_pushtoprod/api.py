@@ -246,6 +246,11 @@ async def list_models() -> dict[str, Any]:
     }
 
 
+@app.get("/hello")
+def hello():
+    return {"message": "Heelo depuis la version deployée sur Azure"}
+
+
 # =============================================================================
 # POINT D'ENTRÉE — Lancement avec uvicorn
 # =============================================================================
