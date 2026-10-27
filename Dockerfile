@@ -34,7 +34,14 @@ LABEL org.opencontainers.image.title="film-api" \
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# --- 2) CODE + ARTEFACTS MODÈLE -------------------------------------------------
+# --- 2) VERSION DE L'IMAGE ---------------------------------------------------------
+# SHA du commit, injecté par la CI : docker build --build-arg IMAGE_VERSION=<sha>.
+# Lu par /health (os.getenv) pour exposer la version de l'image déployée.
+# Placé APRÈS le pip install : un SHA nouveau n'invalide pas le cache des deps.
+ARG IMAGE_VERSION=dev
+ENV IMAGE_VERSION=${IMAGE_VERSION}
+
+# --- 3) CODE + ARTEFACTS MODÈLE -------------------------------------------------
 # .dockerignore filtre déjà le superflu : model/ ne livrera que
 # model.tflite, vectoriseur.joblib et metrics.json.
 COPY src/ ./src/
@@ -43,12 +50,12 @@ COPY model/ ./model/
 # Le package vit dans src/ (layout src), pas d'installation nécessaire
 ENV PYTHONPATH=/app/src
 
-# --- 3) DURCISSEMENT : utilisateur non-root ---------------------------------------
+# --- 4) DURCISSEMENT : utilisateur non-root ---------------------------------------
 RUN useradd --create-home apiuser \
     && chown -R apiuser:apiuser /app
 USER apiuser
 
-# --- 4) RÉSEAU + SANTÉ -------------------------------------------------------------
+# --- 5) RÉSEAU + SANTÉ -------------------------------------------------------------
 # python:slim n'a ni curl ni wget : le healthcheck passe par urllib.
 EXPOSE 8000
 HEALTHCHECK --interval=30s --timeout=5s --start-period=20s --retries=3 \

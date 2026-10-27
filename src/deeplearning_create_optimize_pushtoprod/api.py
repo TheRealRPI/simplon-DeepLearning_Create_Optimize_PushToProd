@@ -18,6 +18,7 @@ Date   : 26/10/2026
 # TODO: Importer ton ModelLoader
 # Indice : from .model_loader import model_loader (ou le chemin relatif)
 from contextlib import asynccontextmanager
+from os import getenv
 from typing import Any
 
 from fastapi import FastAPI, HTTPException
@@ -143,6 +144,7 @@ async def health() -> dict[str, Any]:
 
     Retourne :
     - status: "ok"
+    - version_image: SHA du commit de build (injecté par la CI, "dev" en local)
     - infos du modèle (version, type, runtime, F1)
     """
 
@@ -151,6 +153,7 @@ async def health() -> dict[str, Any]:
 
     return {
         "status": "ok",
+        "version_image": getenv("IMAGE_VERSION", "dev"),
         **model_info,
     }
 
@@ -248,7 +251,7 @@ async def list_models() -> dict[str, Any]:
 
 @app.get("/hello")
 def hello():
-    return {"message": "Heelo depuis la version deployée sur Azure"}
+    return {"message": "Hello depuis la version déployée sur Azure"}
 
 
 # =============================================================================

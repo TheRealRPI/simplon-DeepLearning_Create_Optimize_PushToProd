@@ -66,6 +66,13 @@ class TestHealth:
         assert isinstance(data["f1_score"], float)
         assert 0.0 <= data["f1_score"] <= 1.0
 
+    def test_version_image_presente(self, client):
+        """/health doit exposer la version de l'image (SHA du build CI, "dev" en local)."""
+        data = client.get("/health").json()
+        assert "version_image" in data
+        assert isinstance(data["version_image"], str)
+        assert len(data["version_image"]) > 0
+
 
 # =============================================================================
 # GET /v1/models — Liste des modèles
