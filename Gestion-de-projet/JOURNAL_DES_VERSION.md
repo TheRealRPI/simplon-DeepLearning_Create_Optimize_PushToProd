@@ -40,18 +40,21 @@
 | 27/10/2026 09h47 | `f1e8f24` | Local → CI | Fix : `environment: AzureContainerRegistries` déclaré dans le job `publier` → run #6 : **3 jobs verts — jalon J4 atteint**, image `film-api:f1e8f24` dans l'ACR | ✅ 3 jobs verts |
 | 27/10/2026 11h14 | `698c6c4` | Local → CI | Tâche 6.1 — route `/hello` ajoutée → run #7 : 3 jobs verts, image `film-api:698c6c4` dans l'ACR | ✅ 3 jobs verts |
 | 27/10/2026 11h49 | `35603b5` | Local → CI | Phase 6.2 (préparation) — `/health` expose `version_image` (SHA injecté au build via build-arg `IMAGE_VERSION`), smoke test CI + test pytest, correction coquilles `/hello` → run #8 : 3 jobs verts, image `film-api:35603b5` dans l'ACR | ✅ 3 jobs verts |
+| 27/10/2026 11h53 | `cedacd2` | Local | Mise à jour gestion de projet : entrées du journal pour les runs CI #3 à #8 (test négatif 4.3, jalon J4, route `/hello`, `version_image`), revenu aux charges réelles des phases 4.3 à 5.3 et 6.1 dans `PLAN.md` | ✅ Push réussi sur GitHub |
+| 27/10/2026 11h55 | `cedacd2` | CI (GitHub Actions) | Run #9 : 3 jobs verts — image `film-api:cedacd2` publiée dans l'ACR (vérifiée sur le portail Azure) | ✅ 3 jobs verts |
 
 ---
 
-## Versions déployées en production (Azure)
+## Images publiées dans l'Azure Container Registry (ACR)
 
-> Cette section sera remplie lors des déploiements sur Azure Container Apps (Phase 5 du plan).
+> Images Docker `film-api` publiées par le job `publier` de la pipeline CI (tag = SHA du commit). État constaté sur le portail Azure le 27/10/2026.
 
-| Date | Identifiant commit | Tag image Docker | Environnement | Changement | Résultat |
-|------|--------------------|------------------|---------------|------------|----------|
-| — | — | — | — | *Aucun déploiement en production pour l'instant* | — |
-
----
+| Tag image Docker | Identifiant commit | Run CI | Date de publication (portail Azure) |
+|------------------|--------------------|--------|-------------------------------------|
+| `film-api:cedacd2` | `cedacd2` | Run #9 | 27/10/2026 11h55 (UTC+1) |
+| `film-api:35603b5` | `35603b5` | Run #8 | 27/10/2026 11h51 (UTC+1) |
+| `film-api:698c6c4` | `698c6c4` | Run #7 | 27/10/2026 11h16 (UTC+1) |
+| `film-api:f1e8f24` | `f1e8f24` | Run #6 | 27/10/2026 09h49 (UTC+1) |
 
 ## Notes
 
@@ -61,4 +64,4 @@
 
 ---
 
-*Dernière mise à jour : 27/10/2026 12h00*
+*Dernière mise à jour : 27/10/2026 14h30*

@@ -157,17 +157,17 @@ Ce projet s'inscrit dans le brief de mise en production d'un modèle de Deep Lea
 | 4.2 | Workflow : job `image` (build Docker + vérification démarrage API) | 4.1 | 0,10 | 0,05 | H, T (Docker, Actions) | 27/10 09h00–09h40 ✅ |
 | 4.3 | Test du workflow : push → 2 jobs verts + test négatif (seuil impossible) | 4.2 | 0,10 | 0,10 | H, T (GitHub) | 27/10 09h40–10h20 ✅ (fait le 26/10 15h26–16h00) |
 | 4.4 | Ajout job `publier` (préparation secrets ACR) | 4.3 | 0,10 | 0,05 | H, T (GitHub Secrets) | 27/10 10h30–11h10 ✅ (fait le 27/10 09h42) |
-| **PHASE 5 - Déploiement Azure (0,50 j)** | | | **0,50** | | | **J4 - 27/10 après-midi** |
+| **PHASE 5 - Déploiement Azure (0,50 j)** | | | **0,50** | **0,30** | | **J4 - 27/10 après-midi** |
 | 5.1 | Création du registre ACR (Basic) + activation utilisateur admin | 4.4 | 0,10 | 0,05 | H, T, F (Azure) | 27/10 11h10–11h50 ✅ (fait le 27/10 09h16) |
 | 5.2 | Ajout des 3 secrets GitHub + job `publier` (login ACR + push image) | 5.1 | 0,10 | 0,10 | H, T (GitHub, Docker) | 27/10 11h50–12h30 ✅ (inclut debug environment, 27/10 09h42–09h47) |
 | 5.3 | Test : 3 jobs verts + image dans le registre avec tag commit | 5.2 | 0,10 | 0,05 | H, T (Azure, GitHub) | 27/10 13h30–14h10 ✅ (validé au run #6, 27/10 09h47) |
-| 5.4 | Création Azure Container App (1 vCPU, 2 Go, ingress externe) | 5.3 | 0,10 | | H, T, F (Azure) | 27/10 14h10–14h50 |
-| 5.5 | Test public : /health et /predict (3 cas) + **JALON formateur** | 5.4 | 0,10 | | H, T (Azure), H (formateur) | 27/10 14h50–15h30 |
-| **PHASE 6 - Gestion des versions (0,20 j)** | | | **0,20** | | | **J4 - 27/10 fin après-midi** |
+| 5.4 | Création Azure Container App (1 vCPU, 2 Go, ingress externe) | 5.3 | 0,10 | 0,05 | H, T, F (Azure) | 27/10 14h10–14h50 ✅ (fait le 27/10 matin) |
+| 5.5 | Test public : /health et /predict (3 cas) + **JALON formateur** | 5.4 | 0,10 | 0,05 | H, T (Azure), H (formateur) | 27/10 14h50–15h30 ✅ (fait le 27/10 ~11h) |
+| **PHASE 6 - Gestion des versions (0,20 j)** | | | **0,20** | **0,16** | | **J4 - 27/10 fin après-midi** |
 | 6.1 | Ajout route /hello + push + attente 3 jobs verts | 5.5 | 0,05 | 0,05 | H, T (GitHub, Azure) | 27/10 15h30–15h50 ✅ (fait le 27/10 11h14) |
-| 6.2 | Déploiement manuel nouvelle image + vérification /hello visible | 6.1 | 0,05 | | H, T, F (Azure) | 27/10 15h50–16h10 |
-| 6.3 | Retour arrière : redéploiement ancien commit + vérification | 6.2 | 0,05 | | H, T, F (Azure) | 27/10 16h10–16h30 |
-| 6.4 | Rédaction du JOURNAL_DES_VERSION.md | 6.3 | 0,05 | | H | 27/10 16h30–16h50 |
+| 6.2 | Déploiement manuel nouvelle image + vérification /hello visible | 6.1 | 0,05 | 0,04 | H, T, F (Azure) | 27/10 15h50–16h10 ✅ |
+| 6.3 | Retour arrière : redéploiement ancien commit + vérification | 6.2 | 0,05 | 0,04 | H, T, F (Azure) | 27/10 16h10–16h30 ✅ |
+| 6.4 | Rédaction du JOURNAL_DES_VERSION.md | 6.3 | 0,05 | 0,03 | H | 27/10 16h30–16h50 ✅ |
 | **PHASE 7 - Fin de vie et ménage (0,25 j)** | | | **0,25** | | | **J5 - 28/10 matin** |
 | 7.1 | Relevé du coût estimé Azure + suppression Container App | 6.4 | 0,10 | | H, T, F (Azure) | 28/10 09h00–09h40 |
 | 7.2 | Suppression environnement + registre ACR + preuves (captures) | 7.1 | 0,10 | | H, T, F (Azure) | 28/10 09h40–10h20 |
@@ -190,9 +190,9 @@ Ce projet s'inscrit dans le brief de mise en production d'un modèle de Deep Lea
 | **J1** - Notebook complet | 23/10 16h30 | Notebook exécutable de haut en bas, dossier `model/` complet, commit GitHub | ✅ **Atteint 23/10 12h30** |
 | **J2** - API + Qualité OK | 26/10 14h10 | /health et /predict répondent, tests pytest verts, barrière qualité validée | ✅ **Atteint 26/10 14h10** |
 | **J3** - Image Docker OK | 26/10 16h00 | Image construite, conteneur local répond comme l'API locale | ✅ **Atteint 26/10 16h00** |
-| **J4** - CI/CD vert | 27/10 11h10 | 3 jobs verts, test négatif validé (rouge puis vert) | GitHub Actions |
-| **J5** - Production en ligne | 27/10 15h30 | Adresse publique accessible, /health et /predict OK | **Formateur** |
-| **J6** - Gestion des versions | 27/10 16h50 | /hello ajouté puis retiré, rollback fonctionnel, journal rédigé | Auto-vérification |
+| **J4** - CI/CD vert | 27/10 11h10 | 3 jobs verts, test négatif validé (rouge puis vert) | ✅ **Atteint 27/10 09h47** (run #6) |
+| **J5** - Production en ligne | 27/10 15h30 | Adresse publique accessible, /health et /predict OK | ✅ **Atteint 27/10 ~11h** |
+| **J6** - Gestion des versions | 27/10 16h50 | /hello ajouté puis retiré, rollback fonctionnel, journal rédigé | ✅ **Atteint 27/10 12h00** |
 | **J7** - Ménage effectué | 28/10 10h50 | Ressources Azure supprimées, preuves capturées, coût relevé | Auto-vérification |
 | **J8** - Livraison finale | 28/10 17h00 | Tous les livrables présents, fiche plan vs réel rédigée | **Deadline** |
 
@@ -267,11 +267,11 @@ DeepLearning_Create_Optimize_PushToProd/
 | Phase 2 - API + Tests + Qualité | 0,55 | **1,00** | **+0,45** |
 | Phase 3 - Conteneurisation | 0,25 | **0,16** | **-0,09** |
 | Phase 4 - CI/CD GitHub Actions | 0,45 | **0,30** | **-0,15** |
-| Phase 5 - Déploiement Azure | 0,50 | | |
-| Phase 6 - Gestion des versions | 0,20 | | |
+| Phase 5 - Déploiement Azure | 0,50 | **0,30** | **-0,20** |
+| Phase 6 - Gestion des versions | 0,20 | **0,16** | **-0,04** |
 | Phase 7 - Fin de vie et ménage | 0,25 | | |
 | Phase 8 - Documentation et finalisation | 0,80 | | |
-| **TOTAL** | **5,00** | **2,85** | |
+| **TOTAL** | **5,00** | **3,31** | |
 
 > **Note :** 5,0 jours estimés pour 5 jours travaillés (22, 23, 26, 27, 28/10) à **6h30/jour** (9h-17h avec pauses) = **32h30 effectives**. Pauses fixes : 10h15-10h30, 12h30-13h30 (repas), 15h15-15h30. Pas de marge calendaire, les estimations intègrent une marge interne de ~10% sur les tâches à risque. En cas de dépassement, prioriser les livrables obligatoires du brief.
 
