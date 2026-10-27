@@ -34,6 +34,12 @@
 | 26/10/2026 14h47 | `1d7a02b` | Local | API conteneurisée via Docker : ajout du `Dockerfile` et `.dockerignore`, mise à jour de `requirements.txt` et `PLAN.md` | ✅ Push réussi sur GitHub |
 | 26/10/2026 15h07 | `fdf5cee` | Local | Phase 4 (4.1 + 4.2) : pipeline CI/CD GitHub Actions (`.github/workflows/pipeline.yml`) avec jobs `test` (Python 3.13, barrière qualité, pytest) et `image` (build Docker + smoke test `/health` et `/predict`), runners `ubuntu-26.04` épinglés, correctif `.gitignore` (exception `!.github/`) | ✅ Push réussi sur GitHub |
 | 26/10/2026 15h10 | `fdf5cee` | CI (GitHub Actions) | Run #1 : job `test` VERT (0:32 — barrière qualité acceptée + pytest OK) puis job `image` VERT (0:48 — build + smoke test conteneur). URL : `actions/runs/40336844450` | ✅ 2 jobs verts |
+| 26/10/2026 15h26 | `aa9a98f` | Local → CI | Tâche 4.3 — test négatif volontaire : `model/metrics.json` remplacé par le faux modèle (F1 bas) → run #3 ROUGE, la barrière qualité refuse le modèle comme prévu | ✅ Comportement validé |
+| 26/10/2026 16h00 | `fe23bae` | Local → CI | Tâche 4.3 (suite) — restauration des métriques originales → run #4 VERT, retour à la normale | ✅ 2 jobs verts |
+| 27/10/2026 09h42 | `8b804dc` | Local → CI | Tâches 4.4 + 5.2 — job `publier` (login ACR + push image, tag SHA) → run #5 ROUGE : secrets stockés dans l'environment GitHub non visibles par le job | ❌ Diagnostiqué (inputs vides) |
+| 27/10/2026 09h47 | `f1e8f24` | Local → CI | Fix : `environment: AzureContainerRegistries` déclaré dans le job `publier` → run #6 : **3 jobs verts — jalon J4 atteint**, image `film-api:f1e8f24` dans l'ACR | ✅ 3 jobs verts |
+| 27/10/2026 11h14 | `698c6c4` | Local → CI | Tâche 6.1 — route `/hello` ajoutée → run #7 : 3 jobs verts, image `film-api:698c6c4` dans l'ACR | ✅ 3 jobs verts |
+| 27/10/2026 11h49 | `35603b5` | Local → CI | Phase 6.2 (préparation) — `/health` expose `version_image` (SHA injecté au build via build-arg `IMAGE_VERSION`), smoke test CI + test pytest, correction coquilles `/hello` → run #8 : 3 jobs verts, image `film-api:35603b5` dans l'ACR | ✅ 3 jobs verts |
 
 ---
 
@@ -55,4 +61,4 @@
 
 ---
 
-*Dernière mise à jour : 26/10/2026 15h00*
+*Dernière mise à jour : 27/10/2026 12h00*
