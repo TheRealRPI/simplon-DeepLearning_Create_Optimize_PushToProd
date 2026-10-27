@@ -114,3 +114,37 @@ jobs:
       - name: Nettoyer le conteneur
         if: always()
         run: docker rm -f film-api-ci
+
+# =============================================================================
+# JOB 3 — PUBLIER : push de l'image dans l'ACR (tâches 4.4 + 5.2)
+# =============================================================================
+# Seulement sur push/master (jamais sur les PR), et seulement si les jobs
+# test + image sont verts. Le tag = SHA court du commit : chaque image est
+# traçable vers un commit exact, ce qui servira au rollback (tâche 6.3).
+# Les secrets transitent par env: (jamais de ${{ }} inline dans run:,
+# par sécurité d'injection de script).
+
+  publier:
+    needs: [test, image]
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/master'
+    runs-on: ubuntu-26.04
+    steps:
+      - name: Récupérer le code
+        uses: actions/checkout@v5
+
+      - name: Connexion au registre ACR
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ secrets.ACR_SERVER }}
+          username: ${{ secrets.ACR_USERNAME }}
+          password: ${{ secrets.ACR_PASSWORD }}
+
+      - name: Construire et pousser l'image (tag = SHA court du commit)
+        env:
+          ACR_SERVER: ${{ secrets.ACR_SERVER }}
+        run: |
+          TAG=${GITHUB_SHA:0:7}
+          IMAGE="${ACR_SERVER}/film-api:${TAG}"
+          echo "Push de ${IMAGE}"
+          docker build -t "$IMAGE" .
+          docker push "$IMAGE"
