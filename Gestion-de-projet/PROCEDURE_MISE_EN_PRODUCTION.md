@@ -39,6 +39,12 @@ Deux garanties héritées de la CI :
 | Secrets GitHub (environment `AzureContainerRegistries`) | `ACR_SERVER`, `ACR_USERNAME`, `ACR_PASSWORD` |
 | URL publique | donnée par la commande `az containerapp show` ci-dessous |
 
+> **Fin de vie :** les ressources listées ci-dessus ont été **supprimées le
+> 27/10/2026** après la démonstration (registre, Container App, environnement,
+> environment GitHub — voir `FIN_DE_VIE.md`), à l'exception du groupe
+> `rpierronRG`, conservé (partagé). Cette procédure est conservée à titre de
+> référence.
+
 ## 3. Déploiement d'une nouvelle version
 
 ### Étape 1 — Pousser le code et attendre les 3 jobs verts

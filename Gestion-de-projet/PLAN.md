@@ -83,7 +83,7 @@ Ce projet s'inscrit dans le brief de mise en production d'un modèle de Deep Lea
 | Azure Container Registry (Basic) | ~5€/mois | Facturé tant que le registre existe, à supprimer en fin de vie |
 | Azure Container Apps (1 vCPU, 2 Go RAM) | ~30-50€/mois | Consommation à l'usage, à supprimer en fin de vie |
 | GitHub (gratuit) | 0€ | Dépôt public ou privé gratuit |
-| **Total estimé (5 jours)** | **~5-10€** | Coût réel à relever à l'étape 15 (ménage) |
+| **Total** | estimé **~5-10 €** | **Coût réel relevé le 27/10 : ~0,04 €** (registre ~6 h d'existence à ~4,40 €/mois ; API facturée à l'usage ~0,35 €/M requêtes — détail dans FIN_DE_VIE.md § 5) |
 
 ---
 
@@ -168,17 +168,17 @@ Ce projet s'inscrit dans le brief de mise en production d'un modèle de Deep Lea
 | 6.2 | Déploiement manuel nouvelle image + vérification /hello visible | 6.1 | 0,05 | 0,04 | H, T, F (Azure) | 27/10 15h50–16h10 ✅ |
 | 6.3 | Retour arrière : redéploiement ancien commit + vérification | 6.2 | 0,05 | 0,04 | H, T, F (Azure) | 27/10 16h10–16h30 ✅ |
 | 6.4 | Rédaction du JOURNAL_DES_VERSION.md | 6.3 | 0,05 | 0,03 | H | 27/10 16h30–16h50 ✅ |
-| **PHASE 7 - Fin de vie et ménage (0,25 j)** | | | **0,25** | | | **J5 - 28/10 matin** |
-| 7.1 | Relevé du coût estimé Azure + suppression Container App | 6.4 | 0,10 | | H, T, F (Azure) | 28/10 09h00–09h40 |
-| 7.2 | Suppression environnement + registre ACR + preuves (captures) | 7.1 | 0,10 | | H, T, F (Azure) | 28/10 09h40–10h20 |
-| 7.3 | Rédaction de FIN_DE_VIE.md (composants, procédure, coûts) | 7.2 | 0,05 | | H | 28/10 10h30–10h50 |
-| **PHASE 8 - Documentation et finalisation (0,80 j)** | | | **0,80** | | | **J5 - 28/10 après-midi** |
-| 8.1 | Rédaction de PROCEDURE_MISE_EN_PRODUCTION.md (1 page) | 6.4 | 0,15 | | H | 28/10 13h30–14h30 |
-| 8.2 | Finalisation du PLAN.md (remplir charges réelles, écarts) | 7.3 | 0,15 | | H | 28/10 14h30–15h15 |
-| 8.3 | Rédaction du README.md (explication de lancement) | 3.2 | 0,15 | | H | 28/10 15h30–16h30 |
-| 8.4 | Fiche d'une page : plan vs réel, écarts, réflexions | 8.2 | 0,15 | | H | 28/10 16h30–17h00 |
-| 8.5 | Collecte et organisation de toutes les preuves | 7.2 | 0,10 | | H | 28/10 11h00–11h40 |
-| 8.6 | Vérification finale : tous les livrables présents et cohérents | 8.5 | 0,10 | | H | 28/10 11h40–12h20 |
+| **PHASE 7 - Fin de vie et ménage (0,25 j)** | | | **0,25** | **0,15** | | Prévu J5 - 28/10 matin, **fait le J4 - 27/10 après-midi** |
+| 7.1 | Relevé du coût estimé Azure + suppression Container App | 6.4 | 0,10 | 0,03 | H, T, F (Azure) | 27/10 ~15h00–15h20 ✅ |
+| 7.2 | Suppression environnement + registre ACR + preuves (captures) | 7.1 | 0,10 | 0,04 | H, T, F (Azure) | 27/10 ~15h00–15h25 ✅ |
+| 7.3 | Rédaction de FIN_DE_VIE.md (composants, procédure, coûts) | 7.2 | 0,05 | 0,08 | H | 27/10 14h45–16h25 ✅ |
+| **PHASE 8 - Documentation et finalisation (0,80 j)** | | | **0,80** | **0,23** | | Prévu J5 - 28/10 après-midi, **fait le J4 - 27/10** (~1h30 au total) |
+| 8.1 | Rédaction de PROCEDURE_MISE_EN_PRODUCTION.md (1 page) | 6.4 | 0,15 | 0,03 | H | 27/10 ✅ |
+| 8.2 | Finalisation du PLAN.md (remplir charges réelles, écarts) | 7.3 | 0,15 | 0,06 | H | 27/10 ✅ |
+| 8.3 | Rédaction du README.md (explication de lancement) | 3.2 | 0,15 | 0,05 | H | 27/10 ~16h40 ✅ |
+| 8.4 | Fiche d'une page : plan vs réel, écarts, réflexions | 8.2 | 0,15 | 0,04 | H | 27/10 ✅ (`FICHE_PLAN_VS_REEL.md`) |
+| 8.5 | Collecte et organisation de toutes les preuves | 7.2 | 0,10 | 0,03 | H | 27/10 ✅ (captures regroupées dans `Gestion-de-projet/images/`) |
+| 8.6 | Vérification finale : tous les livrables présents et cohérents | 8.5 | 0,10 | 0,02 | H | 27/10 ~16h50 ✅ |
 
 ---
 
@@ -193,8 +193,8 @@ Ce projet s'inscrit dans le brief de mise en production d'un modèle de Deep Lea
 | **J4** - CI/CD vert | 27/10 11h10 | 3 jobs verts, test négatif validé (rouge puis vert) | ✅ **Atteint 27/10 09h47** (run #6) |
 | **J5** - Production en ligne | 27/10 15h30 | Adresse publique accessible, /health et /predict OK | ✅ **Atteint 27/10 ~11h** |
 | **J6** - Gestion des versions | 27/10 16h50 | /hello ajouté puis retiré, rollback fonctionnel, journal rédigé | ✅ **Atteint 27/10 12h00** |
-| **J7** - Ménage effectué | 28/10 10h50 | Ressources Azure supprimées, preuves capturées, coût relevé | Auto-vérification |
-| **J8** - Livraison finale | 28/10 17h00 | Tous les livrables présents, fiche plan vs réel rédigée | **Deadline** |
+| **J7** - Ménage effectué | 28/10 10h50 | Ressources Azure supprimées, preuves capturées, coût relevé | ✅ **Atteint 27/10 ~16h20** (en avance : preuves P1-P3 dans FIN_DE_VIE.md § 6, run CI #10 vert) |
+| **J8** - Livraison finale | 28/10 17h00 | Tous les livrables présents, fiche plan vs réel rédigée | ✅ **Atteint 27/10 ~16h50** (un jour avant la deadline) |
 
 ---
 
@@ -221,14 +221,15 @@ Ce projet s'inscrit dans le brief de mise en production d'un modèle de Deep Lea
 DeepLearning_Create_Optimize_PushToProd/
 ├── .github/
 │   └── workflows/
-│       └── pipeline.yml          # CI/CD (test → image → publier)
+│       └── pipeline.yml          # CI/CD (test → image ; job publier retiré le 27/10)
 ├── .gitignore
 ├── .dockerignore
 ├── Gestion-de-projet/
 │   ├── PLAN.md                   # Ce document
 │   ├── JOURNAL_DES_VERSION.md    # Journal des déploiements
 │   ├── PROCEDURE_MISE_EN_PRODUCTION.md  # Procédure de déploiement
-│   └── FIN_DE_VIE.md             # Plan de fin de vie
+│   ├── FIN_DE_VIE.md             # Fin de vie : preuves, procédure, coûts
+│   └── images/                   # Toutes les captures de preuves (API, CI, qualité, fin de vie)
 ├── cours/                        # PDFs du brief (référence)
 ├── data/
 │   └── films.csv                 # Jeu de données (résumés de films)
@@ -269,9 +270,9 @@ DeepLearning_Create_Optimize_PushToProd/
 | Phase 4 - CI/CD GitHub Actions | 0,45 | **0,30** | **-0,15** |
 | Phase 5 - Déploiement Azure | 0,50 | **0,30** | **-0,20** |
 | Phase 6 - Gestion des versions | 0,20 | **0,16** | **-0,04** |
-| Phase 7 - Fin de vie et ménage | 0,25 | | |
-| Phase 8 - Documentation et finalisation | 0,80 | | |
-| **TOTAL** | **5,00** | **3,31** | |
+| Phase 7 - Fin de vie et ménage | 0,25 | **0,15** | **-0,10** |
+| Phase 8 - Documentation et finalisation | 0,80 | **0,23** | **-0,57** |
+| **TOTAL** | **5,00** | **3,69** | |
 
 > **Note :** 5,0 jours estimés pour 5 jours travaillés (22, 23, 26, 27, 28/10) à **6h30/jour** (9h-17h avec pauses) = **32h30 effectives**. Pauses fixes : 10h15-10h30, 12h30-13h30 (repas), 15h15-15h30. Pas de marge calendaire, les estimations intègrent une marge interne de ~10% sur les tâches à risque. En cas de dépassement, prioriser les livrables obligatoires du brief.
 
@@ -285,4 +286,4 @@ DeepLearning_Create_Optimize_PushToProd/
 
 ---
 
-*Document rédigé le 22/10/2026 - à compléter avec les charges réelles au fur et à mesure du projet.*
+*Document rédigé le 22/10/2026 — charges réelles remplies au fil du projet. Tous les jalons atteints (J0 → J8), projet livré le 27/10/2026, un jour avant la deadline.*

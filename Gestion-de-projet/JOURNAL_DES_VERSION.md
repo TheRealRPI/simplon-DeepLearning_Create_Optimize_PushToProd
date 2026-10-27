@@ -42,12 +42,14 @@
 | 27/10/2026 11h49 | `35603b5` | Local → CI | Phase 6.2 (préparation) — `/health` expose `version_image` (SHA injecté au build via build-arg `IMAGE_VERSION`), smoke test CI + test pytest, correction coquilles `/hello` → run #8 : 3 jobs verts, image `film-api:35603b5` dans l'ACR | ✅ 3 jobs verts |
 | 27/10/2026 11h53 | `cedacd2` | Local | Mise à jour gestion de projet : entrées du journal pour les runs CI #3 à #8 (test négatif 4.3, jalon J4, route `/hello`, `version_image`), revenu aux charges réelles des phases 4.3 à 5.3 et 6.1 dans `PLAN.md` | ✅ Push réussi sur GitHub |
 | 27/10/2026 11h55 | `cedacd2` | CI (GitHub Actions) | Run #9 : 3 jobs verts — image `film-api:cedacd2` publiée dans l'ACR (vérifiée sur le portail Azure) | ✅ 3 jobs verts |
+| 27/10/2026 ~15h20 | — | Production (Azure) | Fin de vie (brief étape 15, PLAN.md phase 7) : relevé des tarifs (registre ~4,40 €/mois, API ~0,35 €/M requêtes) puis suppression de la Container App `rpi-movies-classificator`, de son environnement et du registre `rpicontainerregistries` — URL publique en 404, vérifications CLI `ResourceNotFound` | ✅ Ressources supprimées (preuves : FIN_DE_VIE.md § 6) |
+| 27/10/2026 16h16 | `e694208` | Local → CI | Phase 7 (suite) : job `publier` commenté dans la pipeline (registre supprimé), captures de fin de vie dans `Gestion-de-projet/images/`, début de la documentation → run #10 : 2 jobs verts (`test` 29 s, `image` 45 s) | ✅ 2 jobs verts |
 
 ---
 
 ## Images publiées dans l'Azure Container Registry (ACR)
 
-> Images Docker `film-api` publiées par le job `publier` de la pipeline CI (tag = SHA du commit). État constaté sur le portail Azure le 27/10/2026.
+> Images Docker `film-api` publiées par le job `publier` de la pipeline CI (tag = SHA du commit). État constaté sur le portail Azure le 27/10/2026 — **le registre a été supprimé le 27/10 ~15h20 (fin de vie), ces images n'existent plus**.
 
 | Tag image Docker | Identifiant commit | Run CI | Date de publication (portail Azure) |
 |------------------|--------------------|--------|-------------------------------------|
@@ -59,9 +61,11 @@
 ## Notes
 
 - **22/10/2026** : Premier commit `92cea0e` — mise en place de la structure du projet et du document de planification (PLAN.md). Le fichier de données `textes_films_horreur_comedie.csv` (2400 résumés de films) est versionné dans `Data/`.
+- **27/10/2026 ~15h20** : Fin de vie (PLAN.md phase 7) — suppression de la Container App, de son environnement et du registre ACR ; coût réel relevé ~0,04 € (registre ~6 h d'existence à ~4,40 €/mois). Détails et preuves : `FIN_DE_VIE.md`.
+- **27/10/2026 ~16h30** : Nettoyage GitHub de fin de vie — environment `AzureContainerRegistries` (secrets ACR) supprimé, dossier local `Docs/` (avec le mot de passe ACR en clair, jamais versionné) retiré. Toutes les captures de preuves (API, CI, qualité) sont regroupées dans `Gestion-de-projet/images/`.
 - Les déploiements en production (Azure) seront consignés dans la section dédiée ci-dessus, avec l'identifiant du commit et le tag de l'image Docker associée.
 - Chaque déploiement manuel sur Azure devra être tracé ici avec la date, le commit déployé, et le résultat du test `/health`.
 
 ---
 
-*Dernière mise à jour : 27/10/2026 14h30*
+*Dernière mise à jour : 27/10/2026 16h35*

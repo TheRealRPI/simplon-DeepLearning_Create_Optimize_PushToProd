@@ -30,7 +30,7 @@ toutes dans le groupe de ressources `rpierronRG` :
 | 2 | Environnement Container Apps (managed environment) | `az containerapp env list` → `0` depuis la suppression (preuve P2) | 27/10 | **27/10 ~15h00** ✅ |
 | 3 | Azure Container Registry (offre Basic, utilisateur admin activé) | `rpicontainerregistries` (`rpicontainerregistries.azurecr.io`) | 27/10 09h16 | **27/10 ~15h00** ✅ |
 | 4 | Images Docker stockées dans l'ACR | `film-api:f1e8f24`, `:698c6c4`, `:35603b5`, `:cedacd2` | 27/10 | supprimées avec le registre |
-| 5 | Secrets GitHub (environment `AzureContainerRegistries`) | `ACR_SERVER`, `ACR_USERNAME`, `ACR_PASSWORD` | 27/10 | ⏳ à compléter |
+| 5 | Secrets GitHub (environment `AzureContainerRegistries`) | `ACR_SERVER`, `ACR_USERNAME`, `ACR_PASSWORD` | 27/10 | **27/10 ~16h30** ✅ (environment supprimé) |
 
 **Ce qui n'est PAS supprimé** (à conserver) :
 
@@ -109,9 +109,10 @@ PLAN.md, journal). Pour garder une CI verte jusqu'à la livraison :
 1. **Supprimer les secrets** : Settings → Environments → `AzureContainerRegistries`
    → supprimer les 3 secrets (ou l'environment entier). Sans objet : le registre
    n'existe plus.
-2. **Supprimer `Docs/azureContainer.txt`** : il contient le mot de passe
-   administrateur du registre en clair ; caduc une fois l'ACR supprimé, il n'a
-   plus de raison d'être versionné dans le dépôt.
+2. **Supprimer le dossier local `Docs/`** : il contenait `azureContainer.txt`, le
+   mot de passe administrateur du registre en clair (dossier jamais versionné —
+   le mot de passe n'a jamais été poussé sur GitHub). Caduc une fois l'ACR
+   supprimé, le dossier entier a été retiré le 27/10.
 3. **Retirer le job `publier`** de `.github/workflows/pipeline.yml`, puis pousser :
    les jobs `test` et `image` doivent rester verts.
 4. Consigner la fin de vie dans `Gestion-de-projet/JOURNAL_DES_VERSION.md`.
@@ -125,7 +126,7 @@ PLAN.md, journal). Pour garder une CI verte jusqu'à la livraison :
 | `az acr show` | erreur `ResourceNotFound` | ✅ preuve P2 |
 | `az containerapp env list` | liste vide | ✅ `0` — preuve P2 |
 | Groupe `rpierronRG` | toujours présent, vide des 3 ressources | ✅ résolu par la CLI, laissé en place (partagé) |
-| Push GitHub après retrait du job `publier` | 2 jobs verts (`test`, `image`) | ⏳ job `publier` commenté, push à faire |
+| Push GitHub après retrait du job `publier` | 2 jobs verts (`test`, `image`) | ✅ run #10 du 27/10 (`test` 29 s, `image` 45 s) — preuve P3 |
 
 ## 5. Coûts (estimés vs réels — tâche 7.1 du PLAN.md)
 
@@ -135,7 +136,7 @@ PLAN.md, journal). Pour garder une CI verte jusqu'à la livraison :
 |---|---|---|---|
 | ACR (offre Basic) | ~5 €/mois | **~4,40 €/mois** | à l'existence (facturé tant que le registre vit) |
 | Container App (1 vCPU, 2 Go) | ~30-50 €/mois en charge continue | **~0,35 € / million de requêtes** | à l'usage (requêtes servies) |
-| GitHub (dépôt + Actions, 9 runs) | 0 € (dépôt public) | 0 € | — |
+| GitHub (dépôt + Actions, 10 runs) | 0 € (dépôt public) | 0 € | — |
 
 ### 5.2 Coût réel du projet
 
@@ -160,27 +161,8 @@ ACR ~6 h, API ~4 h), le coût réel se calcule au prorata :
 
 ## 6. Preuves de fin de vie (captures du 27/10/2026)
 
-### 6.1 Méthode de capture
-
-Chaque preuve est une image capturée **immédiatement après l'opération qui la
-concerne** et enregistrée dans `Gestion-de-projet/images/` **sous le nom exact
-prévu ci-dessous** : l'insert de la section 6.2 l'affiche alors automatiquement
-dans ce document.
-
-Capture : `Win + Maj + S` (outil Capture d'écran de Windows) → coller dans un
-éditeur → « Enregistrer sous » dans `images/` (à côté de ce document), au nom prévu.
-
-| # | Quand capturer | Écran à montrer | Fichier dans `images/` | Statut |
-|---|-----------------|-----------------|-------------------------------------|--------|
-| P1 | Après les étapes 2 à 4 | Navigateur sur l'URL publique `/health` : erreur 404 « This Container App is stopped or does not exist » | `fin_de_vie_p1_url_publique_404.png` | ✅ |
-| P2 | Pendant l'étape 5 | Terminal : `az containerapp show` et `az acr show` → `ResourceNotFound` ; `az containerapp env list` → `0` | `fin_de_vie_p2_verification_cli_notfound.png` | ✅ |
-| P3 | Après le push de l'étape 6 | Onglet Actions du dépôt : run à 2 jobs verts (`test`, `image`) | `fin_de_vie_p3_ci_2_jobs_verts.png` | ⏳ |
-
-### 6.2 Inserts — emplacements réservés pour les images
-
-> Seule la preuve P3 reste à capturer (après le push de l'étape 6) : son
-> emplacement ci-dessous apparaît cassé tant que le fichier
-> `fin_de_vie_p3_ci_2_jobs_verts.png` n'est pas enregistré dans `images/`.
+> Les trois preuves sont capturées et affichées ci-dessous — P3 : run #10 du
+> 27/10 (commit `e694208`), 2 jobs verts après retrait du job `publier`.
 
 **P1 — URL publique `/health` : erreur 404 après suppression**
 
@@ -200,11 +182,10 @@ Capture : `Win + Maj + S` (outil Capture d'écran de Windows) → coller dans un
 - [x] Container App `rpi-movies-classificator` supprimée (27/10 ~15h00)
 - [x] Environnement Container Apps supprimé (27/10 ~15h00)
 - [x] Registre `rpicontainerregistries` supprimé (27/10 ~15h00)
-- [ ] Preuves capturées, enregistrées dans `Gestion-de-projet/images/` (noms de la section 6.1) et affichées en section 6.2
-- [ ] Secrets GitHub `AzureContainerRegistries` supprimés
-- [ ] Fichier `Docs/azureContainer.txt` (mot de passe ACR en clair) supprimé
-- [ ] Job `publier` retiré de la pipeline → CI verte (2 jobs)
-- [ ] Entrée de fin de vie ajoutée au `JOURNAL_DES_VERSION.md`
+- [x] Preuves capturées, enregistrées dans `Gestion-de-projet/images/` et affichées en section 6
+- [x] Secrets GitHub `AzureContainerRegistries` supprimés (environment entier, 27/10 ~16h30)
+- [x] Job `publier` retiré de la pipeline → CI verte (run #10 : 2 jobs)
+- [x] Entrée de fin de vie ajoutée au `JOURNAL_DES_VERSION.md`
 - [x] Colonnes « Supprimé le » et « Statut » de ce document complétées
 
 ---
