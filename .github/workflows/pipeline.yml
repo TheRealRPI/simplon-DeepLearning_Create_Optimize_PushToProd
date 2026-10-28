@@ -1,12 +1,15 @@
 # =============================================================================
 # PIPELINE CI/CD — GitHub Actions (PLAN.md, Phase 4, tâches 4.1 et 4.2)
 # =============================================================================
-# Deux jobs, dans l'esprit du projet ("le service est léger, l'inférence
+# Trois jobs, dans l'esprit du projet ("le service est léger, l'inférence
 # passe par LiteRT, pas TensorFlow") :
 #
 #   test   : barrière qualité (exit 1 = rouge) + pytest sur la stack exacte
 #            de l'image Docker (requirements.txt + PYTHONPATH=src).
 #   image  : build de l'image Docker + smoke test du conteneur (/health, /predict).
+#   monitoring : rebuild des 2 images (runner neuf par job) + job batch —
+#            dérive + golden set rejoué sur l'API conteneurisée ; exit 1/3 =
+#            rouge, exit 2 (données production insuffisantes) = neutre.
 #
 # Le job "publier" (login ACR + push, PLAN.md tâches 4.4 + 5.2) est ajouté
 # demain, une fois le registre Azure créé et les 3 secrets posés.
@@ -74,8 +77,8 @@ jobs:
       - name: Récupérer le code
         uses: actions/checkout@v5
 
-      - name: Construire l'image Docker
-        run: docker build --build-arg IMAGE_VERSION=ci -t film-api:ci .
+      - name: Construire l'image Docker (cache GHA partagé avec le job monitoring)
+        run: docker build --build-arg IMAGE_VERSION=ci --cache-from type=gha --cache-to type=gha,mode=max -t film-api:ci .
 
       - name: Démarrer le conteneur
         run: docker run -d --name film-api-ci -p 8000:8000 film-api:ci
@@ -115,6 +118,80 @@ jobs:
       - name: Nettoyer le conteneur
         if: always()
         run: docker rm -f film-api-ci
+
+# =============================================================================
+# JOB 3 — MONITORING : build du job batch + rejeu du golden set (plan §7.5)
+# =============================================================================
+# ⚠️ Runner NEUF à chaque job : film-api:ci construit dans le job "image"
+# n'existe pas ici → on rebuild les DEUX images (le cache GHA, exporté par le
+# job image et ci-dessous, rend les layers pip souvent en cache — les
+# requirements*.txt changent rarement).
+# En CI il n'y a PAS de trafic production : l'analyse de dérive sort en 2
+# (données insuffisantes — neutre PAR CONCEPTION). Le golden set, lui, doit
+# être CONFORME : c'est lui qui juge l'image qui part en production.
+
+  monitoring:
+    needs: [image]
+    runs-on: ubuntu-26.04
+    steps:
+      - name: Récupérer le code
+        uses: actions/checkout@v5
+
+      - name: Construire les images (cache GHA)
+        run: |
+          docker build --build-arg IMAGE_VERSION=ci \
+            --cache-from type=gha --cache-to type=gha,mode=max -t film-api:ci .
+          docker build -f Dockerfile.monitoring --build-arg IMAGE_VERSION=ci \
+            --cache-from type=gha --cache-to type=gha,mode=max -t film-monitoring:ci .
+
+      # uid du runner (1001) ≠ apiuser/monuser (1000) : sans chmod, le log
+      # non-fatal échoue silencieusement et le job sort en 2 sans rapports.
+      - name: Dossier de log inscriptible
+        run: mkdir -p data/monitoring && chmod 0777 data/monitoring
+
+      - name: Démarrer l'API puis lancer le job de monitoring
+        run: |
+          docker run -d --name film-api-ci -p 8000:8000 --env IMAGE_VERSION=ci \
+            --env PREDICTIONS_LOG=/data/predictions.jsonl \
+            -v "$PWD/data/monitoring:/data" film-api:ci
+
+          # L'API charge le modèle (~10-20 s) : sans cette attente, le job
+          # sortirait en 3 (API injoignable) à chaque run.
+          echo "Attente du démarrage de l'API..."
+          ok=""
+          for i in $(seq 1 30); do
+            if curl -sf http://localhost:8000/health > /dev/null; then ok="1"; break; fi
+            sleep 2
+          done
+          if [ -z "$ok" ]; then
+            echo "::error::L'API n'a pas répondu sur /health après 60 s" >&2
+            docker logs film-api-ci >&2
+            exit 1
+          fi
+
+          # Exit 2 (données production insuffisantes en CI) = warning attendu :
+          # seuls 1 (dérive/régression) et 3 (API) mettent le job au rouge.
+          # `|| code=$?` neutralise le -e de bash de GHA pour capturer le code.
+          code=0
+          docker run --rm --network host -v "$PWD/data/monitoring:/data" \
+            --env API_URL=http://localhost:8000 \
+            --env PREDICTIONS_LOG=/data/predictions.jsonl \
+            --env MONITORING_REPORTS_DIR=/data/reports \
+            film-monitoring:ci --no-mlflow || code=$?
+          if [ "$code" -ne 0 ] && [ "$code" -ne 2 ]; then exit "$code"; fi
+          echo "Job monitoring : exit=$code (2 = données production insuffisantes, attendu en CI)"
+
+      - name: Nettoyer le conteneur
+        if: always()
+        run: docker rm -f film-api-ci
+
+      - name: Archiver les rapports
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: monitoring-reports
+          path: data/monitoring/reports/
+          if-no-files-found: warn
 
 # =============================================================================
 # JOB 3 — PUBLIER : push de l'image dans l'ACR (tâches 4.4 + 5.2)

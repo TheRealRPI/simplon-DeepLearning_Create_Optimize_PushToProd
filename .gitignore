@@ -21,3 +21,6 @@ Docs/
 # Optimizer Temp
 keras*/
 model/metrics.json.bak
+
+# Monitoring local : logs JSONL, rapports, base MLflow (volume compose)
+data/monitoring/

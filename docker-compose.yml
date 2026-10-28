@@ -1,0 +1,54 @@
+# =============================================================================
+# DOCKER COMPOSE — démo locale du dispositif de monitoring complet (A6)
+# =============================================================================
+# Trois services, deux profils :
+#   api        : l'image API (Dockerfile), logge le trafic dans /data (volume)
+#   monitoring : le job batch (Dockerfile.monitoring) — profile "batch",
+#                démarre À LA DEMANDE via `docker compose run`
+#   mlflow     : UI de tracking (P4) — profile "ui"
+#
+# Usage :
+#   mkdir -p data/monitoring                 # SINON Docker le crée root → l'API
+#                                           # non-root n'écrit pas → log absent
+#                                           # (silencieux : non-fatal par conception)
+#   docker compose up -d api                # API sur http://localhost:8000
+#   docker compose run --rm monitoring      # job → rapports dans data/monitoring/reports/
+#   docker compose --profile ui up -d mlflow   # UI sur http://localhost:5000
+# =============================================================================
+
+services:
+  api:
+    build: .
+    ports: ["8000:8000"]
+    environment:
+      IMAGE_VERSION: local
+      PREDICTIONS_LOG: /data/predictions.jsonl
+    volumes: ["./data/monitoring:/data"]
+
+  monitoring:
+    build:
+      context: .
+      dockerfile: Dockerfile.monitoring
+    profiles: ["batch"]
+    # service_healthy : le job ne démarre qu'APRÈS le healthcheck de l'API
+    # (chargement du modèle ~10-20 s) — sinon /health échouerait → exit 3.
+    depends_on:
+      api:
+        condition: service_healthy
+    environment:
+      API_URL: http://api:8000
+      PREDICTIONS_LOG: /data/predictions.jsonl
+      MONITORING_REPORTS_DIR: /data/reports
+      MLFLOW_TRACKING_URI: sqlite:////data/mlflow/mlflow.db   # lu en P4 (registry)
+    volumes: ["./data/monitoring:/data"]
+
+  mlflow:
+    image: ghcr.io/mlflow/mlflow:v3.17.2
+    profiles: ["ui"]
+    command: >
+      sh -c "mkdir -p /data/mlflow/artifacts &&
+      mlflow server --host 0.0.0.0 --port 5000
+      --backend-store-uri sqlite:////data/mlflow/mlflow.db
+      --default-artifact-root /data/mlflow/artifacts"
+    ports: ["5000:5000"]
+    volumes: ["./data/monitoring:/data"]

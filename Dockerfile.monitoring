@@ -1,0 +1,58 @@
+# =============================================================================
+# DOCKERFILE.MONITORING — image du job batch de monitoring du modèle
+# =============================================================================
+# Job PONCTUEL, jamais un service (D2) : pas d'EXPOSE, pas de HEALTHCHECK —
+# il tourne, produit ses rapports dans /data/reports, puis s'arrête.
+#
+# Pas de multi-étapes ni de retrait de pip (contrairement au Dockerfile API) :
+# ce job n'est jamais exposé au réseau public, et mlflow apporte de toute façon
+# sa propre surface de dépendances. Le durcissement de l'image API visait des
+# CVE de TOOLING de build embarquées dans l'image finale — hors de propos ici.
+#
+# Même base que l'image API : une seule variante Debian dans le projet.
+#
+# Build :  docker build -f Dockerfile.monitoring --build-arg IMAGE_VERSION=<sha> -t film-monitoring .
+# Run   :  via docker-compose.yml (profile batch), jamais docker run direct :
+#          docker compose run --rm monitoring
+#
+# ⚠️ Le contexte de build est filtré par Dockerfile.monitoring.dockerignore
+# (fichier FRÈRE, feature BuildKit) : le root .dockerignore exclut
+# config.yaml et model/reference*.csv|meta, dont ce build a BESOIN. Le fichier
+# frère REMPLACE le root pour ce build uniquement.
+# =============================================================================
+
+FROM python:3.13-slim-trixie
+
+# Layout src, aucun install nécessaire (comme l'image API)
+ENV PYTHONUNBUFFERED=1 \
+    PIP_NO_CACHE_DIR=1 \
+    PIP_DISABLE_PIP_VERSION_CHECK=1 \
+    PYTHONPATH=/app/src
+
+WORKDIR /app
+
+# Deps AVANT le code = cache des layers : tant que requirements-monitoring.txt
+# ne change pas, pip n'est pas ré-exécuté.
+COPY requirements-monitoring.txt .
+RUN pip install --no-cache-dir -r requirements-monitoring.txt
+
+# SHA du commit (injecté par la CI) → permet d'attribuer chaque rapport à un release
+ARG IMAGE_VERSION=dev
+ENV IMAGE_VERSION=${IMAGE_VERSION}
+
+# Code + artefacts modèle, fichier par fichier :
+# - reference.csv / reference_drift.csv / meta : lus par collect.py et golden_set.py
+# - PAS de Data/ : le job ne rejoue pas l'entraînement, la référence de dérive
+#   est déjà figée dans reference_drift.csv (P0)
+COPY src/ ./src/
+COPY model/model.tflite model/vectoriseur.joblib model/metrics.json \
+     model/reference.csv model/reference_drift.csv model/reference_drift.meta.json model/
+COPY config.yaml ./
+
+# Non-root : le job écrit ses rapports dans /data (volume partagé)
+RUN useradd --create-home monuser && chown -R monuser:monuser /app
+USER monuser
+
+# Codes de sortie du job : 0 sain · 1 dérive/régression · 2 données
+# insuffisantes · 3 API injoignable (cf. monitoring/__main__.py)
+ENTRYPOINT ["python", "-m", "deeplearning_create_optimize_pushtoprod.monitoring"]

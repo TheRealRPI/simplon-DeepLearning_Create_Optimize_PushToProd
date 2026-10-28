@@ -1,0 +1,17 @@
+# =============================================================================
+# DÉPENDANCES DU JOB DE MONITORING — image Dockerfile.monitoring UNIQUEMENT
+# =============================================================================
+# Miroir du groupe [dependency-groups].monitoring de pyproject.toml :
+#   local → uv sync --group monitoring · image → ce fichier.
+#
+# ⚠️ Jamais dans requirements.txt : l'image de service ne doit RIEN gagner
+# (A1). mlflow n'est branché qu'en P4 (registry) mais vit ici dès maintenant :
+# une seule image à reconstruire.
+
+evidently>=0.7,<0.8        # dérive + rapports — API 0.7, les presets 0.4 ont été retirés
+mlflow>=3,<4               # tracking + registry (P4, bonus — D7 : --no-mlflow en CI)
+scikit-learn>=1.7          # F1/accuracy du golden set (transitif d'evidently, explicite car importé)
+pandas>=2.3                # DataFrames du job (collect/drift/golden_set)
+httpx>=0.28                # rejeu HTTP du golden set
+pyyaml>=6                  # lecture de config.yaml (section monitoring)
+ai-edge-litert>=2.3.0      # interpréteur TFLite du pyfunc MLflow (Phase 4)

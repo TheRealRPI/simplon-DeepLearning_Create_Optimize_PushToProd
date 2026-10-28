@@ -1,0 +1,52 @@
+# =============================================================================
+# Dockerfile.monitoring.dockerignore — ignore DÉDIÉ au build monitoring (BuildKit)
+# =============================================================================
+# ⚠️ Fichier FRÈRE de Dockerfile.monitoring : `docker build -f Dockerfile.monitoring`
+# lit CELUI-CI et IGNORE complètement le .dockerignore racine (feature BuildKit,
+# défaut de Docker ≥ 23.x — un builder legacy ignorerait ce fichier et les COPY
+# échoueraient).
+#
+# Différence avec le root : config.yaml et model/reference*.csv|meta sont
+# AUTORISÉS ici (le job lit les seuils, rejoue le golden set et compare la
+# référence de dérive) alors qu'ils restent EXCLUS de l'image API —
+# l'image déployée publiquement n'embarque ni données d'évaluation ni config.
+# =============================================================================
+
+# --- VCS & metadata -----------------------------------------------------------
+.git
+.gitignore
+
+# --- Python : caches & environnement local ------------------------------------
+__pycache__/
+**/__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+.ruff_cache/
+.python-version
+uv.lock
+
+# --- IDE ----------------------------------------------------------------------
+.vscode/
+
+# --- CI, builds & docs : jamais dans une image --------------------------------
+.github/
+Dockerfile
+Dockerfile.monitoring
+.dockerignore
+Dockerfile.monitoring.dockerignore
+README.md
+
+# --- Tests, données, artefacts d'entraînement ---------------------------------
+tests/
+Data/
+keras_tuner_dir/
+notebooks/
+cours/
+Gestion-de-projet/
+reports/
+data/
+
+# --- Artefacts modèle inutiles au job ------------------------------------------
+model/model.keras
+model/faux_metrics.json
