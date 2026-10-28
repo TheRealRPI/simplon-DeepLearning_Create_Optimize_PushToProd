@@ -52,6 +52,6 @@ dev = [
 monitoring = [
     "evidently>=0.7,<0.8",  # API 0.7 (Report/DataDefinition) — les presets 0.4 ont été retirés
     "mlflow>=3,<4",         # registry (P4, bonus)
-    "pandas>=2.3",
+    "pandas>=2.3,<3.1",     # <3.1 : pandas 3.1 retire infer_dtype_from_object, importé par evidently.legacy
     "httpx>=0.28",
 ]
