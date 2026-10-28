@@ -195,3 +195,43 @@ class TestNonFatalite:
         response = client.post("/predict", json={"texte": texte_comedie})
         assert response.status_code == 200
         assert not chemin.exists()
+
+
+# =============================================================================
+# CONCURRENCE — les BackgroundTasks loggent en parallèle (threadpool)
+# =============================================================================
+
+
+class TestConcurrence:
+    def test_ecritures_paralleles_sans_corruption(self, monkeypatch, tmp_path):
+        """20 threads × 20 lignes de ~12 Ko : sans verrou, les écritures
+        multi-chunks (lignes > buffer 8 Ko) s'entrelacent — bug mesuré en P3
+        en démo compose (114 lignes cassées). Avec le verrou : 400 lignes,
+        toutes valides.
+        """
+        import threading
+
+        chemin = tmp_path / "concurrent.jsonl"
+        monkeypatch.setattr(predictions_log, "LOG_PATH", chemin)
+        monkeypatch.setattr(predictions_log, "ENABLED", True)
+
+        def ecrire(tid: int) -> None:
+            for i in range(20):
+                predictions_log.log_prediction(
+                    source="production",
+                    route="/predict",
+                    status=200,
+                    texte=f"t{tid}-{i}-" + "x" * 12_000,  # > buffer 8 Ko → multi-chunks
+                    prediction={"proba": 0.5, "classe": 1, "seuil": 0.5},
+                )
+
+        threads = [threading.Thread(target=ecrire, args=(t,)) for t in range(20)]
+        for t in threads:
+            t.start()
+        for t in threads:
+            t.join()
+
+        lignes = chemin.read_text(encoding="utf-8").splitlines()
+        assert len(lignes) == 400
+        for ligne in lignes:  # aucune ligne corrompue
+            assert json.loads(ligne)["status"] == 200

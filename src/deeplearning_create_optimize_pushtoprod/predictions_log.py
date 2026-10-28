@@ -10,9 +10,11 @@ Contrat (§5.2 du plan) :
 - log_prediction() NE LÈVE JAMAIS : une panne de log ne doit jamais casser
   la prédiction (A2). Toute exception est avalée ;
 - open(path, "a") + une ligne par requête, JSON en UTF-8 (ensure_ascii=False) ;
-- PAS de verrou fichier : D5 — une seule réplique de l'API est assumée.
-  Plusieurs répliques écriraient des lignes entrelacées (documenté dans
-  MONITORING.md) ;
+- verrou de PROCESSUS (threading.Lock) : les BackgroundTasks de Starlette
+  tournent dans un threadpool et peuvent logger en parallèle — sans verrou,
+  leurs écritures multi-chunks s'entrelacent (bug mesuré en P3). PAS de verrou
+  FICHIER : D5 — une seule réplique de l'API est assumée. Plusieurs répliques
+  écriraient des lignes entrelacées (documenté dans MONITORING.md) ;
 - désactivable sans redéploiement : PREDICTIONS_LOG_ENABLED=0 → no-op.
 
 Schéma d'une ligne (§5.3) :
@@ -36,6 +38,7 @@ Date   : 28/10/2026
 # =============================================================================
 
 import json
+import threading
 from datetime import UTC, datetime
 from os import getenv
 from pathlib import Path
@@ -54,6 +57,13 @@ ENABLED = getenv("PREDICTIONS_LOG_ENABLED", "1") == "1"
 # Version de l'image (SHA du build CI, "dev" en local) — une chute de F1 doit
 # être rattachable à un release précis pour être actionnable.
 IMAGE_VERSION = getenv("IMAGE_VERSION", "dev")
+
+# ⚠️ Les BackgroundTasks de Starlette tournent dans un THREADPOOL : plusieurs
+# requêtes peuvent logger EN PARALLÈLE. Sans verrou, les write() multi-chunks
+# (lignes > buffer de 8 Ko) s'entrelacent → lignes corrompues (mesuré en P3 :
+# 114 lignes cassées sur ~900 en démo compose). Ce verrou sérialise les
+# écritures DANS le processus ; il ne protège PAS plusieurs répliques (D5).
+_VERRO = threading.Lock()
 
 
 # =============================================================================
@@ -107,10 +117,12 @@ def log_prediction(
     }
 
     try:
-        # D5 : PAS de verrou → une seule réplique assumée (cf. docstring module)
-        LOG_PATH.parent.mkdir(parents=True, exist_ok=True)
-        with open(LOG_PATH, "a", encoding="utf-8") as f:
-            f.write(json.dumps(ligne, ensure_ascii=False) + "\n")
+        # Verrou : sérialise les écritures concurrentes des BackgroundTasks
+        # (threadpool Starlette) — cf. _VERRO ci-dessus.
+        with _VERRO:
+            LOG_PATH.parent.mkdir(parents=True, exist_ok=True)
+            with open(LOG_PATH, "a", encoding="utf-8") as f:
+                f.write(json.dumps(ligne, ensure_ascii=False) + "\n")
     except Exception:
         # A2 : un échec de log (volume absent, plein, permissions) ne doit
         # JAMAIS remonter à la requête. C'est assumé et documenté.
