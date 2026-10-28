@@ -12,3 +12,22 @@
 
 f1_minimum: 0.83
 test_size_minimum: 400
+
+# =============================================================================
+# MONITORING DU MODÈLE — lue par le package monitoring (P2, job batch)
+# =============================================================================
+# Les clés ci-dessus (f1_minimum, test_size_minimum) restent inchangées pour
+# quality_gate.py. La section ci-dessous ne sert qu'au job de monitoring :
+# il compare ces seuils aux métriques mesurées sur les logs JSONL et le
+# golden set, puis sort : 0 (sain) / 1 (dérive ou régression) / 2 (données
+# insuffisantes) / 3 (API injoignable).
+
+monitoring:
+  fenetre_jours: 30                # fenêtre glissante du trafic production
+  fenetre_min_lignes: 100          # garde-fou : moins de lignes → exit 2, pas d'alerte
+  drift_share_max: 0.30            # part max de colonnes en dérive (Evidently)
+  oov_rate_max: 0.25               # seuil d'alerte sur le signal principal
+  f1_minimum: 0.83                 # miroir de la barrière qualité (seuil d'alerte)
+  f1_reference_golden_set: 0.8713  # BASELINE MESURÉE EN P0 (28/10/2026 : 400 lignes,
+                                   # 0 erreur, via HTTP sur l'artefact servi) — ce n'est
+                                   # PAS f1_score_test (0.8571, jeu de test seul)
