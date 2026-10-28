@@ -88,6 +88,7 @@ def main() -> int:
 
     # --- 3) Dérive (si assez de données, sinon garde-fou) ----------------------
     derive: bool | None = None
+    resultat_drift: dict | None = None
     if len(production) < int(parametres["fenetre_min_lignes"]):
         print(
             f"⚠️ Données insuffisantes ({len(production)} < {parametres['fenetre_min_lignes']}) "
@@ -128,7 +129,13 @@ def main() -> int:
     if arguments.no_mlflow:
         print("Tracking MLflow : désactivé (--no-mlflow)")
     else:
-        print("Tracking MLflow : pas encore branché (P4 → registry.py) ; utiliser --no-mlflow en attendant")
+        try:
+            from .registry import tracer_et_enregistrer
+
+            tracer_et_enregistrer(parametres, golden, resultat_drift, rejets, len(production))
+            print("ℹ️ UI MLflow : docker compose --profile ui up -d mlflow → http://localhost:5000")
+        except Exception as e:  # D7 : le tracking ne doit JAMAIS casser le verdict
+            print(f"⚠️ Tracking MLflow échoué — le verdict monitoring reste valide (D7) : {e}")
 
     # --- 6) Code de sortie (priorité 3 > 1 > 2 > 0) ------------------------------
     if regression or derive:

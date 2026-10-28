@@ -207,8 +207,22 @@ Ce n'est **ni** un service, **ni** un cron : la dérive est un job batch.
 mkdir -p data/monitoring                        # sinon Docker le crée root → log silencieusement absent
 docker compose up -d api                        # image API + volume partagé
 docker compose run --rm monitoring             # job → rapports dans data/monitoring/reports/
-docker compose --profile ui up -d mlflow        # (bonus P4) UI MLflow sur :5000
+docker compose --profile ui up -d mlflow        # UI MLflow sur http://localhost:5000
 ```
+
+**Ce que montre l'UI MLflow** (le tracking est journalisé par le job, sans `--no-mlflow`) :
+l'expérience `film-classifier`, une **run par exécution** (métriques golden set + dérive,
+seuils en paramètres, rapports HTML/JSON téléchargeables en artefacts), et le
+**registry** : le modèle servi en pyfunc rechargeable, enregistré **une seule fois par
+version de modèle** (idempotent), avec parité vérifiée.
+
+> [!WARNING]
+> **Trois pièges MLflow rencontrés et corrigés** : (1) le service mlflow doit tourner au
+> même uid que le job (`user: "1000:1000"` dans le compose — sinon il crée la base
+> `mlflow.db` en root et le job obtient *attempt to write a readonly database*) ;
+> (2) `pyfunc.log_model` **exécute** le modèle pour inférer la signature → l'interpréteur
+> TFLite (natif, non sérialisable) doit être exclu via `__getstate__` ; (3) en MLflow 3,
+> `log_model` retourne un `ModelInfo` — l'URI rechargeable est `.model_uri`.
 
 Résultat mesuré en démo : golden set **F1 = 0,8713 (écart 0,0000 vs baseline)** sur l'API
 conteneurisée, dérive non détectée sur 119 requêtes réelles, **exit 0**. Sans trafic
@@ -273,7 +287,7 @@ réentraînement — pas par le job :
 | **Boucle de labellisation** | Échantillonner le trafic, labelliser (revue humaine ou heuristique), entraîner sur les corrections | Activer le F1 en production (lève la limite 1) — sous ~300 labels/fenêtre, elle automatiserait du bruit |
 | **Stockage persistant** | Azure Blob (`wasbs://`) pour le JSONL, Postgres/MySQL pour le backend MLflow | Le filesystem d'une Container App est éphémère ; sqlite local ne survit pas (limite 5) |
 | **Container App Job** | Déclencheur hebdomadaire du job de monitoring côté Azure | Équivalent cloud du job CI, sur le trafic réel |
-| **Registry MLflow** | `registry.py` (pyfunc TFLite) — phase bonus P4 | Cycle MLOps complet défendable à l'oral |
+| **Registry MLflow** | ✅ **Fait (P4)** : `registry.py` — pyfunc TFLite rechargeable, enregistré une fois par version de modèle, parité 5/5 vs modèle servi (A8) | Cycle MLOps complet défendable à l'oral |
 
 ---
 

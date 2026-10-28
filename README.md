@@ -297,7 +297,7 @@ DeepLearning_Create_Optimize_PushToProd/
 | `docker run --rm -p 8000:8000 film-api` | Lancer le conteneur |
 | `docker compose up -d api` | Démo monitoring : API + volume partagé |
 | `docker compose run --rm monitoring` | Job de monitoring (rapports dans `data/monitoring/reports/`, exit 0/1/2/3) |
-| `docker compose --profile ui up -d mlflow` | UI MLflow sur `:5000` (phase bonus) |
+| `docker compose --profile ui up -d mlflow` | UI MLflow sur `:5000` — runs, métriques, artefacts, registry |
 | `uv run python scripts/build_reference_drift.py` | Régénérer la référence de dérive (après réentraînement) |
 | `uv run python scripts/check_golden_set.py` | Re-mesurer la baseline F1 du golden set (API requise) |
 

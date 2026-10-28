@@ -45,6 +45,10 @@ services:
   mlflow:
     image: ghcr.io/mlflow/mlflow:v3.17.2
     profiles: ["ui"]
+    # ⚠️ uid aligné sur apiuser/monuser (1000) : lancé en root, ce service
+    # crée mlflow.db root-owned → le job (monuser) obtenait "attempt to
+    # write a readonly database" (mesuré en démo P4). À 1000, tout écrit.
+    user: "1000:1000"
     command: >
       sh -c "mkdir -p /data/mlflow/artifacts &&
       mlflow server --host 0.0.0.0 --port 5000
