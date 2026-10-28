@@ -32,7 +32,7 @@ Date   : 28/10/2026
 # =============================================================================
 
 import json
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from os import getenv
 from pathlib import Path
 
@@ -147,7 +147,7 @@ def main() -> int:
     print(f"  Matrice      : TN={tn}  FP={fp}  FN={fn}  TP={tp}")
     print(f"  Erreurs      : {erreurs or 'aucune'}")
     print(f"  Modèle       : {infos.get('version')} · image {infos.get('version_image')}")
-    print(f"  ⚠️  Ce F1 n'est PAS f1_score_test (0,8571, test seul)")
+    print("  ⚠️  Ce F1 n'est PAS f1_score_test (0,8571, test seul)")
     if conforme:
         print(f"  ✅ Conforme → figer f1_reference_golden_set = {f1:.4f}")
     else:
@@ -156,7 +156,7 @@ def main() -> int:
 
     # --- 5) Artefact figé -------------------------------------------------------
     rapport = {
-        "date": datetime.now(timezone.utc).isoformat(timespec="seconds"),
+        "date": datetime.now(UTC).isoformat(timespec="seconds"),
         "api_url": API_URL,
         "model_version": infos.get("version"),
         "image_version": infos.get("version_image"),

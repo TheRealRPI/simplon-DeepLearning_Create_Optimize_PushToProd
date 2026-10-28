@@ -34,7 +34,7 @@ Date   : 28/10/2026
 # =============================================================================
 
 import json
-from datetime import date, datetime, timezone
+from datetime import UTC, date, datetime
 from pathlib import Path
 
 import pandas as pd
@@ -111,7 +111,7 @@ def main() -> int:
     meta = {
         "model_version": model_loader.metrics["model_version"],
         "date_generation": date.today().isoformat(),
-        "genere_le": datetime.now(timezone.utc).isoformat(timespec="seconds"),
+        "genere_le": datetime.now(UTC).isoformat(timespec="seconds"),
         "n_lignes": len(out),
         "source": str(DATA_CSV.name),
         "vocabulaire_size": len(vocab),
