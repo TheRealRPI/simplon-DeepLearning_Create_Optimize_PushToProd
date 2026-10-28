@@ -796,7 +796,7 @@ monitoring = [
     { name = "evidently", specifier = ">=0.7,<0.8" },
     { name = "httpx", specifier = ">=0.28" },
     { name = "mlflow", specifier = ">=3,<4" },
-    { name = "pandas", specifier = ">=2.3" },
+    { name = "pandas", specifier = ">=2.3,<3.1" },
 ]
 
 [[package]]
