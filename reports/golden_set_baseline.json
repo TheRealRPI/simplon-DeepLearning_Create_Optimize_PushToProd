@@ -1,0 +1,21 @@
+{
+  "date": "2026-10-28T14:31:14+00:00",
+  "api_url": "http://localhost:8000",
+  "model_version": "1.1.0",
+  "image_version": "dev",
+  "n": 400,
+  "f1": 0.8713,
+  "accuracy": 0.87,
+  "matrice_confusion": {
+    "tn": 172,
+    "fp": 28,
+    "fn": 24,
+    "tp": 176
+  },
+  "erreurs": {},
+  "intervalle_acceptation": [
+    0.84,
+    0.88
+  ],
+  "conforme": true
+}
