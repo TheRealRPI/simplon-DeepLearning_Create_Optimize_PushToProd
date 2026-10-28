@@ -14,7 +14,7 @@ Exécution :
 import json
 from pathlib import Path
 
-from deeplearning_create_optimize_pushtoprod.quality_gate import verifier_qualite
+from deeplearning_create_optimize_pushtoprod.quality_gate import METRICS_PATH, verifier_qualite
 
 # =============================================================================
 # OUTILS — Fichiers factices
@@ -43,11 +43,23 @@ class TestModeleReel:
         assert all(message.startswith("✅") for message in messages)
 
     def test_vrai_f1_au_dessus_du_seuil(self):
-        """Vérification chiffrée : 0.8608 ≥ 0.83 et 470 ≥ 400."""
+        """Vérification chiffrée : le vrai modèle est accepté avec SES métriques.
+
+        Les valeurs attendues sont lues dans model/metrics.json (la même source
+        que la barrière) : ce test ne casse plus à chaque réentraînement
+        (TODO résolu — l'ancienne valeur 0.8608 était codée en dur).
+        """
         ok, messages = verifier_qualite()
         assert ok is True
-        assert any("0.8608" in message for message in messages)
-        assert any("470" in message for message in messages)
+
+        with open(METRICS_PATH, encoding="UTF-8") as f:
+            attendu = json.load(f)
+        f1_attendu = f"{float(attendu['f1_score_test']):.4f}"  # même formatage que la barrière
+        n_test_attendu = str(int(attendu["test_size"]))
+
+        # La barrière doit rapporter les métriques RÉELLES du modèle servi
+        assert any(f1_attendu in message for message in messages), messages
+        assert any(n_test_attendu in message for message in messages), messages
 
 
 # =============================================================================
