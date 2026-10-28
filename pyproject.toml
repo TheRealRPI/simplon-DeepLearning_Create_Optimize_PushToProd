@@ -47,3 +47,11 @@ select = ["E", "F", "I", "UP", "B"]
 dev = [
     "ruff>=0.17.1",
 ]
+# Job de monitoring (P2) — OPT-IN : uv sync --group monitoring
+# Jamais dans requirements.txt : l'image de service ne doit rien gagner (A1).
+monitoring = [
+    "evidently>=0.7,<0.8",  # API 0.7 (Report/DataDefinition) — les presets 0.4 ont été retirés
+    "mlflow>=3,<4",         # registry (P4, bonus)
+    "pandas>=2.3",
+    "httpx>=0.28",
+]

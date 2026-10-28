@@ -26,7 +26,16 @@ monitoring:
   fenetre_jours: 30                # fenêtre glissante du trafic production
   fenetre_min_lignes: 100          # garde-fou : moins de lignes → exit 2, pas d'alerte
   drift_share_max: 0.30            # part max de colonnes en dérive (Evidently)
-  oov_rate_max: 0.25               # seuil d'alerte sur le signal principal
+  value_drift_seuil: 0.30          # distance Wasserstein normée max PAR COLONNE.
+                                   # Le défaut Evidently (0.1) sature sur le bruit
+                                   # d'échantillonnage (fenêtre 150 lignes : 0.08–0.15
+                                   # en trafic sain, mesuré en P2) ; 0.30 sépare le bruit
+                                   # d'une vraie dérive (5.5 sur le jeu décalé).
+  oov_rate_max: 0.70               # seuil d'alerte ABSOLU sur le signal principal.
+                                   # Calibré sur la référence P0 : μ=0,536 σ=0,069 (les tokens
+                                   # incluent les bigrammes, majoritairement hors vocabulaire)
+                                   # → μ+2σ ≈ 0,67. La valeur 0,25 du plan initial était
+                                   # ANTÉRIEURE à la mesure : elle aurait alerté en permanence.
   f1_minimum: 0.83                 # miroir de la barrière qualité (seuil d'alerte)
   f1_reference_golden_set: 0.8713  # BASELINE MESURÉE EN P0 (28/10/2026 : 400 lignes,
                                    # 0 erreur, via HTTP sur l'artefact servi) — ce n'est
