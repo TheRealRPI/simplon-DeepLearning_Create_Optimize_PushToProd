@@ -44,6 +44,7 @@
 | 27/10/2026 11h55 | `cedacd2` | CI (GitHub Actions) | Run #9 : 3 jobs verts — image `film-api:cedacd2` publiée dans l'ACR (vérifiée sur le portail Azure) | ✅ 3 jobs verts |
 | 27/10/2026 ~15h20 | — | Production (Azure) | Fin de vie (brief étape 15, PLAN.md phase 7) : relevé des tarifs (registre ~4,40 €/mois, API ~0,35 €/M requêtes) puis suppression de la Container App `rpi-movies-classificator`, de son environnement et du registre `rpicontainerregistries` — URL publique en 404, vérifications CLI `ResourceNotFound` | ✅ Ressources supprimées (preuves : FIN_DE_VIE.md § 6) |
 | 27/10/2026 16h16 | `e694208` | Local → CI | Phase 7 (suite) : job `publier` commenté dans la pipeline (registre supprimé), captures de fin de vie dans `Gestion-de-projet/images/`, début de la documentation → run #10 : 2 jobs verts (`test` 29 s, `image` 45 s) | ✅ 2 jobs verts |
+| 28/10/2026 | — | Local | Robustesse de `/predict` — nettoyage du texte en entrée : nouveau module `preprocessing.py` (`nettoyer_texte` : NFKC, typographie → ASCII, HTML/URL/e-mails, caractères de contrôle et invisibles, espacements — parité avec la cellule 7 du notebook), validateur Pydantic `mode="before"` dans `api.py` (les contraintes 42–10 000 car. et la détection de langue s'appliquent au texte nettoyé), 24 nouveaux tests (`test_preprocessing.py` + `TestNettoyageEntree`), README à jour | ✅ 64 tests pytest verts + ruff propre en local (commit en attente) |
 
 ---
 
@@ -68,4 +69,4 @@
 
 ---
 
-*Dernière mise à jour : 27/10/2026 16h35*
+*Dernière mise à jour : 28/10/2026*

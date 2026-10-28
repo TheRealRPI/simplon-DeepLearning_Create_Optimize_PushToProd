@@ -43,9 +43,9 @@ Le modèle classifie un résumé de film (en anglais) en deux catégories : **co
 - **Notebook complet** (8 parties) : audit des données, vectorisation TF-IDF, modèles de référence, optimisation KerasTuner/Optuna, évaluation, sauvegarde
 - **Modèle optimisé** : réseau de neurones Keras avec recherche d'hyperparamètres (20 essais KerasTuner + 20 essais Optuna)
 - **Conversion TFLite** : modèle quantifié (int8) — 12× plus léger (1,1 Mo vs 13,5 Mo) sans perte de performance
-- **API FastAPI** : endpoints `/health` et `/predict` avec validation Pydantic (texte anglais, 42–10 000 caractères)
+- **API FastAPI** : endpoints `/health` et `/predict` avec nettoyage du texte en entrée (espacements, caractères invisibles, HTML) et validation Pydantic (texte anglais, 42–10 000 caractères)
 - **Barrière qualité** : vérification automatique des seuils (F1 ≥ 0,83, test_size ≥ 400) via `config.yaml`
-- **Tests automatisés** : suite pytest complète (API + barrière qualité, ~30 tests)
+- **Tests automatisés** : suite pytest complète (nettoyage + API + barrière qualité, 64 tests)
 - **Conteneurisation** : Dockerfile optimisé (image slim, sans TensorFlow, utilisateur non-root, healthcheck)
 - **CI/CD GitHub Actions** : pipeline avec jobs `test` (barrière qualité + pytest) et `image` (build Docker + smoke test)
 - **Documentation de gestion de projet** : PLAN.md, procédure de déploiement, journal des versions, fin de vie
@@ -102,6 +102,7 @@ sequenceDiagram
     participant M as Modèle TFLite (LiteRT)
 
     C->>API: POST /predict {"texte": "..."}
+    API->>API: Nettoyage (espacements, invisibles, HTML)
     API->>API: Validation Pydantic (anglais, 42-10000 car.)
     API->>V: transform([texte])
     V-->>API: matrice dense (1, 9005)
@@ -189,8 +190,9 @@ curl -X POST http://localhost:8000/predict \
 
 | Règle | Valeur |
 |-------|--------|
+| Nettoyage | Automatique (sauts de ligne, espaces multiples, caractères invisibles, HTML, URL, typographie → ASCII) |
 | Langue | Anglais uniquement (détection automatique) |
-| Longueur minimale | 42 caractères |
+| Longueur minimale | 42 caractères (comptés après nettoyage) |
 | Longueur maximale | 10 000 caractères |
 | Champ requis | `texte` (string) |
 
@@ -227,10 +229,12 @@ DeepLearning_Create_Optimize_PushToProd/
 │       ├── __init__.py
 │       ├── api.py                    # API FastAPI (/health, /predict)
 │       ├── model_loader.py           # Chargement TFLite + vectoriseur + inférence
+│       ├── preprocessing.py          # Nettoyage du texte en entrée (/predict)
 │       └── quality_gate.py           # Barrière qualité (CLI)
 ├── tests/
 │   ├── conftest.py                   # Fixtures pytest
-│   ├── test_api.py                   # Tests de l'API (~20 tests)
+│   ├── test_api.py                   # Tests de l'API (~30 tests)
+│   ├── test_preprocessing.py         # Tests du nettoyage d'entrée (~20 tests)
 │   └── test_quality_gate.py          # Tests de la barrière qualité (~10 tests)
 ├── config.yaml                       # Seuils de qualité (F1 min, taille test min)
 ├── Dockerfile                        # Image slim (LiteRT, pas TensorFlow)
@@ -260,9 +264,10 @@ DeepLearning_Create_Optimize_PushToProd/
 
 ### Tests automatisés
 
-Le projet dispose d'une suite de tests complète (~30 tests) :
+Le projet dispose d'une suite de tests complète (64 tests) :
 
-- **Tests API** (`test_api.py`) : toutes les routes, validation Pydantic, cas d'erreur 422/500
+- **Tests nettoyage** (`test_preprocessing.py`) : chaque règle de nettoyage (espacements, invisibles, typographie, HTML), idempotence, texte propre inchangé
+- **Tests API** (`test_api.py`) : toutes les routes, validation Pydantic, cas d'erreur 422/500, non-régression du nettoyage (probabilité identique avec ou sans bruit)
 - **Tests barrière qualité** (`test_quality_gate.py`) : modèle accepté, faux modèle refusé, robustesse (fichiers manquants/malformés)
 
 ```bash
@@ -323,4 +328,4 @@ Ce projet est réalisé dans le cadre du brief pédagogique « Deep Learning —
 
 ---
 
-*Dernière mise à jour : 27/10/2026*
+*Dernière mise à jour : 28/10/2026*

@@ -26,6 +26,7 @@ from langdetect import DetectorFactory, LangDetectException, detect
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 from .model_loader import model_loader
+from .preprocessing import nettoyer_texte
 
 # =============================================================================
 # DÉTECTION DE LANGUE — CONFIG
@@ -47,6 +48,10 @@ class PredictRequest(BaseModel):
     - être une chaîne de caractères (str)
     - avoir une longueur minimale (évite les textes vides ou trop courts)
     - être en anglais
+
+    Le texte est d'abord NETTOYÉ (sauts de ligne, caractères invisibles, HTML,
+    typographie → cf. preprocessing.py) : les contraintes ci-dessous
+    s'appliquent donc au texte nettoyé, comme à l'entraînement.
     """
 
     # Défini le champ 'texte' avec validation
@@ -54,8 +59,21 @@ class PredictRequest(BaseModel):
         ...,  # ... = Ellipsis en Python = "ce champ est obligatoire"
         min_length=42,
         max_length=10000,
-        description="Résumé du film à classifier (en anglais)",
+        description="Résumé du film à classifier (en anglais) — nettoyé automatiquement avant l'inférence",
     )
+
+    # Nettoyage AVANT toute validation (mode="before") : min_length, max_length
+    # et la détection de langue s'appliquent au texte RÉEL, pas au bruit
+    @field_validator("texte", mode="before")
+    @classmethod
+    def nettoyer(cls, v: object) -> object:
+        """Nettoie le texte en entrée (espacements, invisibles, HTML, typographie)."""
+        texte_propre = nettoyer_texte(v)
+        # Un texte réduit à rien par le nettoyage (espaces, \n, invisibles...)
+        # est rejeté avec un message clair plutôt qu'avec l'erreur obscure de langdetect
+        if isinstance(texte_propre, str) and not texte_propre:
+            raise ValueError("Le texte ne contient aucun contenu lisible à classifier (vide après nettoyage).")
+        return texte_propre
 
     @field_validator("texte")
     @classmethod
@@ -175,7 +193,7 @@ async def predict(
     """
     Reçoit un résumé de film et prédit sa catégorie (horreur ou comédie).
 
-    - **texte** : le résumé du film (obligatoire, 42 à 10 000 caractères, anglais uniquement)
+    - **texte** : le résumé du film (obligatoire, 42 à 10 000 caractères après nettoyage, anglais uniquement)
 
     Retourne :
     - **classe** : 0 (comédie) ou 1 (horreur)

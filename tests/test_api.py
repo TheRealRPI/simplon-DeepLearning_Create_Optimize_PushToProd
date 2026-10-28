@@ -16,6 +16,8 @@ Seul le test d'erreur 500 utilise un mock (impossible à déclencher autrement).
 
 import re
 
+import pytest
+
 # =============================================================================
 # GET / — Page d'accueil
 # =============================================================================
@@ -209,6 +211,50 @@ class TestPredictValidation:
         """Vérifie qu'un JSON valide ne renvoie pas 422 (test de non-régression)."""
         response = client.post("/predict", json={"texte": texte_comedie})
         assert response.status_code == 200
+
+
+# =============================================================================
+# POST /predict — Nettoyage de l'entrée (preprocessing.py)
+# =============================================================================
+
+
+class TestNettoyageEntree:
+    """Le nettoyage supprime les faux rejets (422/500) sans changer les prédictions."""
+
+    def test_texte_bruite_accepte(self, client, texte_comedie):
+        """Retours à la ligne, tabulations, invisibles, HTML, emojis → 200, pas de crash."""
+        texte_bruite = "\ufeff<p>" + texte_comedie.replace(" ", "\n", 12) + "</p>\n\t\U0001F480\U0001F600"
+        response = client.post("/predict", json={"texte": texte_bruite})
+        assert response.status_code == 200
+
+    def test_meme_probabilite_que_texte_propre(self, client, texte_comedie):
+        """Non-régression : le bruit neutralisé par le nettoyage ne change PAS la prédiction."""
+        texte_bruite = "<p>" + texte_comedie.replace(" ", "\n", 12) + "</p> \U0001F480"
+        proba_propre = client.post("/predict", json={"texte": texte_comedie}).json()["probabilite"]
+        proba_bruitee = client.post("/predict", json={"texte": texte_bruite}).json()["probabilite"]
+        assert proba_bruitee == pytest.approx(proba_propre, abs=1e-9)
+
+    def test_texte_sans_contenu_lisible(self, client):
+        """Un texte fait uniquement d'espacements/invisibles → 422 avec un message clair."""
+        response = client.post("/predict", json={"texte": " \n\t\u200b\ufeff" * 20})
+        assert response.status_code == 422
+        assert "lisible" in str(response.json()).lower()
+
+    def test_min_length_appliquee_au_texte_nettoye(self, client):
+        """La longueur minimale (42) s'applique au texte NETTOYÉ, pas au texte brut."""
+        # 28 caractères lisibles + 100 sauts de ligne : 128 bruts, 28 nets → 422
+        texte = "This is a tiny film summary!" + "\n" * 100
+        response = client.post("/predict", json={"texte": texte})
+        assert response.status_code == 422
+        assert "42" in str(response.json())
+
+    def test_francais_bruite_toujours_rejete(self, client, texte_francais):
+        """Le nettoyage ne doit pas permettre de contourner la détection de langue."""
+        texte_bruite = "<p>" + texte_francais.replace(" ", "\n", 8) + "</p>"
+        response = client.post("/predict", json={"texte": texte_bruite})
+        assert response.status_code == 422
+        detail = str(response.json())
+        assert "english" in detail.lower() or "anglais" in detail.lower()
 
 
 # =============================================================================
